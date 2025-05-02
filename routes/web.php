@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Asset;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -7,12 +8,9 @@ Route::get('/', function () {
 });
 
 Route::get('/assets', function() {
-    $assets= [
-        ["name"=>"asset1","make"=>"lenovo","id"=>"1"],
-        ["name"=>"thinkpad","make"=>"lenovo","id"=>"2"]
-    ];
+    $assets= Asset::orderBy("name","asc")->paginate(10);
     return view('assets.index',["assets" =>$assets]);
-});
+}) ;
 Route::get('/assets/create', function() {
     return view("assets.create");
 });

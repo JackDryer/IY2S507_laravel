@@ -4,9 +4,13 @@
         @foreach ($assets as  $asset)
         <li>
             <x-card href="/assets/{{$asset['id']}}" :highlight="true">
-            <h3>{{ $asset["name"] }}</h3>
+                <div>
+            <h3>{{ $asset }}</h3>
+            <p>{{$asset->requests}}</p>
+            <div>
             </x-card>
         </li>
         @endforeach
-    </ul> 
+    </ul>
+    {{$assets->links()}} 
 </x-layout>
