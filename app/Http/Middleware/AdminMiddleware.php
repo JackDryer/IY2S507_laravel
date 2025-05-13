@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\User;
 namespace App\Http\Middleware;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Closure;
 use Illuminate\Http\Request;
@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
-    /**
+    /*
      * Handle an incoming request.
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
@@ -21,6 +21,6 @@ class AdminMiddleware
         if (Auth::check()&&Auth::user()->is_admin) {
             return $next($request);
         }
-         abort(403, 'Unauthorized');
+        abort(403, 'Unauthorized');
     }
 }
