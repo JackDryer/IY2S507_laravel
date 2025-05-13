@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('device_requests', function (Blueprint $table) {
+        Schema::create('asset_requests', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
             $table->foreignId("user_id")->constrained()->onDelete("cascade");
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('device_requests');
+        Schema::dropIfExists('asset_requests');
     }
 };

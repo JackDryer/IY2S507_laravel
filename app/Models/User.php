@@ -46,6 +46,10 @@ class User extends Authenticatable
         ];
     }
     public function requests(){
-        return $this->hasMany(DeviceRequest::class);
+        return $this->hasMany(AssetRequest::class);
+    }
+    public function isAdmin(): bool
+    {
+        return $this->is_admin;
     }
 }

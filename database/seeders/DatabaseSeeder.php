@@ -26,7 +26,7 @@ class DatabaseSeeder extends Seeder
             ProductTypeSeeder::class,
             DeviceSeeder::class,
             AssetSeeder::class,
-            DeviceRequestSeeder::class,
+            AssetRequestSeeder::class,
         ]);
     }
 }

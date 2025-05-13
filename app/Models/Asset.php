@@ -18,6 +18,6 @@ class Asset extends Model
         return $this->belongsTo(Device::class);
     }
     public function requests(){
-        return $this->hasMany(DeviceRequest::class);
+        return $this->hasMany(AssetRequest::class);
     }
 }

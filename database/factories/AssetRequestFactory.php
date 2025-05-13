@@ -8,7 +8,7 @@ use App\Models\Asset;
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\DeviceRequest>
  */
-class DeviceRequestFactory extends Factory
+class AssetRequestFactory extends Factory
 {
     /**
      * Define the model's default state.

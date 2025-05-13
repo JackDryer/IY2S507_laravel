@@ -9,4 +9,7 @@ class Colour extends Model
 {
     /** @use HasFactory<\Database\Factories\ColourFactory> */
     use HasFactory;
+    public function assets(){
+        return $this->hasMany(Asset::class);
+    }
 }
