@@ -1,3 +1,3 @@
 <x-layout>
-    <h2>asset id {{$id["id"]}}</h2>
+    <h2>{{$asset}}<h2>
 </x-layout>
