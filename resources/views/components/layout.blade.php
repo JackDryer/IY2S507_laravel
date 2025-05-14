@@ -10,15 +10,21 @@
     <header>
         <nav>
             <h1>Asset Manager</h1>
-            <a href = "/assets"> View Assets</a>
-            <a href = "/assets/create">Create a new asset</a>
-
+            @guest
             <a href = {{ route('login.show') }} class = "btn">Login</a>
             <a href = {{ route('register.show') }} class = "btn">Register</a>
+            @endguest
+            @auth
+            <span class = "border-r-2 pr-2">
+                {{Auth::user()->name}}
+            </span>
+            <a href = "/assets" > View Assets</a>
+            <a href = "/assets/create">Create a new asset</a>
             <form action="{{route("logout")}}" method="POST">
                 @csrf
                 <button class="btn">Logout</button>
             </form>
+            @endauth
         </nav>
     </header>
     <main class="container">
