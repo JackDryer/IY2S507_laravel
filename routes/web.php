@@ -9,12 +9,16 @@ Route::get('/', function () {
     return view('welcome');
 })->name("home");
 
-Route::get('/register',[AuthController::class,'showRegister'])->name("register.show");
-Route::get('/login',[AuthController::class,'showLogin'])->name("login.show");
-Route::post('/register',[AuthController::class,'register'])->name("register");
-Route::post('/login',[AuthController::class,'login'])->name("login");
-Route::post('/logout',[AuthController::class,'logout'])->name("logout");
+Route::middleware(['guest'])->controller(AuthController::class)->group(function(){
+    Route::get('/register','showRegister')->name("register.show");
+    Route::get('/login','showLogin')->name("login.show");
+    Route::post('/register','register')->name("register");
+    Route::post('/login','login')->name("login");
+});
+Route::post('/logout',[AuthController::class,'logout'])->name("logout")->middleware('auth');
 
-Route::get('/assets', [AssetController::class,"index"])->middleware(['auth']);
-Route::get('/assets/create', [AssetController::class,"create"])->middleware(['auth','admin']);
-Route::get('/assets/{id}', [AssetController::class,"show"])->middleware(['auth','admin']);
+Route::middleware(['auth','admin'])->controller(AssetController::class)->group(function(){
+    Route::get('/assets', "index");
+    Route::get('/assets/create', "create");
+    Route::get('/assets/{id}', "show");
+});
