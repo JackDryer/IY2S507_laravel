@@ -18,9 +18,12 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()&&Auth::user()->is_admin) {
+        if (AdminMiddleware::is_admin()) {
             return $next($request);
         }
         abort(403, 'Unauthorized');
+    }
+    public static function is_admin(): bool{
+        return Auth::check()&&Auth::user()->is_admin;
     }
 }
