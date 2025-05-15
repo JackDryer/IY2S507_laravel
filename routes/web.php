@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
 use App\Models\Asset;
@@ -21,4 +22,9 @@ Route::middleware(['auth','admin'])->controller(AssetController::class)->group(f
     Route::get('/assets', "index");
     Route::get('/assets/create', "create");
     Route::get('/assets/{id}', "show");
+});
+
+Route::middleware(['auth','admin'])->controller(AdminController::class)->group(function(){
+    Route::get('/admin', "home")->name("admin.home");
+    Route::get('/admin/user_requests', "showUserRequests")->name("admin.user_requests");
 });

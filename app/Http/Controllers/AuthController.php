@@ -23,9 +23,8 @@ class AuthController extends Controller
             'email'=> 'required|email|',
             'password' => 'required|string|min:8|confirmed'
         ]);
-        $user = User::create($validated);
-        Auth::login($user);
-        return redirect()->route("home");
+        User::create($validated);
+        return redirect()->route("home")->with('success',"User Created, please wait for approval form admin");
     }
 
     public function login (Request $request){
@@ -34,12 +33,15 @@ class AuthController extends Controller
             'password' => 'required|string'
         ]);
         
-        if (Auth::attempt($validated)){
+        if (Auth::attemptWhen(
+            $validated,
+            function (User $user) {return $user->is_approved;}
+        )){
             $request->session()->regenerate();
             return redirect()->route("home");
         }
         throw ValidationException::withMessages([
-            'credentials'=>'Sorry, incorrect credentials'
+            'credentials'=>'Sorry, incorrect credentials or the user has not been approved'
         ]);
     }
     public function logout (Request $request){

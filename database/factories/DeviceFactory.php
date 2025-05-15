@@ -21,7 +21,7 @@ class DeviceFactory extends Factory
     public function definition(): array
     {
         return [
-            "name"=> fake()->regexify("[A-Z]{1,4}[0-4]{1,3}"),
+            "name"=> fake()->unique()->regexify("[A-Z]{1,4}[0-4]{1,3}"),
             "ram_bytes" => fake()->numberBetween(2,16)*1000*1000*1000,
             "storage_bytes" => fake()->numberBetween(16,256)*1000*1000*1000,
             "cpu_id" => Cpu::inRandomOrder()->first()->id,

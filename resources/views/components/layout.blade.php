@@ -20,6 +20,9 @@
             </span>
             <a href = "/assets" > View Assets</a>
             <a href = "/assets/create">Create a new asset</a>
+            @admin
+              <a href = "{{route('admin.home')}}">Admin</a>  
+            @endadmin
             <form action="{{route("logout")}}" method="POST">
                 @csrf
                 <button class="btn">Logout</button>
