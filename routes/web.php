@@ -27,4 +27,5 @@ Route::middleware(['auth','admin'])->controller(AssetController::class)->group(f
 Route::middleware(['auth','admin'])->controller(AdminController::class)->group(function(){
     Route::get('/admin', "home")->name("admin.home");
     Route::get('/admin/user_requests', "showUserRequests")->name("admin.user_requests");
+    Route::post('/admin/approve_user', "approveUserRequest")->name("admin.approve_user_request");
 });
