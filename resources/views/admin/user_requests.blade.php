@@ -1,6 +1,13 @@
 <x-layout>
     <h2>Pending User Requests</h2>
     <ul>
+        <div class="list-header">
+            @sortablelink('name', 'Username')
+            @sortablelink('email', 'Email')
+            <div>
+            </div>
+        </div>
+        {{-- This feels like there is an easier way --}}
         @foreach ($user_requests as  $request)
         <li>
             

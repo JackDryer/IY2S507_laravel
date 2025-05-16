@@ -38,6 +38,9 @@ class AuthController extends Controller
             function (User $user) {return $user->is_approved;}
         )){
             $request->session()->regenerate();
+            if (Auth::user()->is_admin){
+                return redirect()->route("admin.home");
+            }
             return redirect()->route("home");
         }
         throw ValidationException::withMessages([

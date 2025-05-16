@@ -8,7 +8,7 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
-    --color-delft: #1f305e;
+    --color-gree: oklch(27.9% 0.041 260.031)
 }
 
 body {
@@ -66,7 +66,10 @@ body {
     @apply bg-slate-800 rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
   }
   .list-item {
-    @apply bg-slate-800 rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
+    @apply bg-gree rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
+  }
+  .list-header {
+  @apply bg-gree rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
   }
   .highlight {
     @apply border-l-4 border-l-red-500;

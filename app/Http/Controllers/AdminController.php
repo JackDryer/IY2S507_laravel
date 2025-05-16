@@ -12,7 +12,7 @@ class AdminController extends Controller
         return view ("admin.home",["user_requests" =>$user_requests]);
     }
     public function showUserRequests (){
-        $user_requests = User::where("is_approved",false)->paginate(10);
+        $user_requests = User::where("is_approved",false)->sortable()->paginate(10);
         return view ("admin.user_requests",["user_requests" =>$user_requests]);
     }
     public function approveUserRequest (Request $request){
