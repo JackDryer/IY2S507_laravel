@@ -3,17 +3,17 @@
     <table class="custom-list-header">
         <thead>
             <tr>
-                <th> @sortablelink('name', 'Name')</th>
-                <th> @sortablelink('email', 'Email')</th>
+                <th> @sortablelink('user.name', 'Name')</th>
+                <th> @sortablelink('asset.name', 'Asset name')</th>
             </tr>
         {{-- This feels like there is an easier way --}}
         <tbody>
-            @foreach ($user_requests as  $request)
+            @foreach ($asset_requests as  $request)
             <tr>
             
-                    <td class = "custom-list-item"><h3>{{$request->name }}</h3></td>
-                    <td class = "custom-list-item"><p>{{$request->email}}</p></td>
-                    <td class = "custom-list-item"><form action="{{route("admin.approve_user_request")}}" method="POST">
+                    <td class = "custom-list-item"><h3>{{$request->user->name }}</h3></td>
+                    <td class = "custom-list-item"><p>{{$request->asset->name}}</p></td>
+                    <td class = "custom-list-item"><form action="{{route("admin.approve_asset_request")}}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$request->id}}">
                         <button class="btn">Approve</button>
@@ -23,5 +23,5 @@
             @endforeach
         </tbody>
     </table>
-    {{$user_requests->links()}} 
+    {{$asset_requests->links()}} 
 </x-layout>

@@ -18,8 +18,7 @@
             <span class = "border-r-2 pr-2">
                 {{Auth::user()->name}}
             </span>
-            <a href = "/assets" > View Assets</a>
-            <a href = "/assets/create">Create a new asset</a>
+            <a href = "{{route("user.home")}}" > My Assets</a>
             @admin
               <a href = "{{route('admin.home')}}">Admin</a>  
             @endadmin

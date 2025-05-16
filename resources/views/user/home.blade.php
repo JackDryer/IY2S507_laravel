@@ -1,5 +1,5 @@
 <x-layout>
-    <h2>Loanable assets</h2>
+    <h2>Assigned assets</h2>
         <table class="custom-list-header">
         <thead>
             <tr>
