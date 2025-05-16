@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class AssetRequest extends Model
 {
     /** @use HasFactory<\Database\Factories\AssetRequestFactory> */
-    use HasFactory; 
+    use HasFactory;
+    protected $fillable = ["user_id","asset_id"];
     public function asset(){
         return $this->belongsTo(Asset::class);
     }

@@ -32,7 +32,7 @@ class UserController extends Controller
         $id = $request->validate([
             'id'=>'required|integer'
         ])["id"];
-        AssetRequest::factory()->create([
+        AssetRequest::create([
             "user_id" =>Auth::id(),
             "asset_id" =>$id
         ]);
