@@ -30,7 +30,7 @@
             @endauth
         </nav>
     @if (session('success'))
-        <div class="bg-green-100 border-t border-b border-blue-500 text-blue-700 px-4 py-3" role="alert">
+        <div class="flashbox" role="alert">
             <p class="font-bold">{{session('success')}}</p>
         </div>
     @endif

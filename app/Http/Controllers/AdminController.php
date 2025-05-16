@@ -22,6 +22,6 @@ class AdminController extends Controller
         $user = User::find($validated["id"]);
         $user->is_approved =true;
         $user->save();
-        return redirect(route("admin.user_requests"))->with("success","user approved");
+        return redirect(route("admin.user_requests"))->with("success","User Approved");
     }
 }

@@ -65,12 +65,15 @@ body {
   .card {
     @apply bg-slate-800 rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
   }
-  .list-item {
-    @apply bg-gree rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
+  .uuuuu {
+    @apply bg-gree border border-slate-600 ;
   }
   .list-header {
-  @apply bg-gree rounded border border-slate-600 px-3 py-3 my-2 flex justify-between items-center;
+  @apply bg-gree rounded border-collapse border border-slate-600;
   }
   .highlight {
     @apply border-l-4 border-l-red-500;
+  }
+  .flashbox {
+    @apply bg-yellow-500 border-t border-b text-black text-center px-4 py-3;
   }

@@ -3,12 +3,11 @@
     <ul>
         @foreach ($assets as  $asset)
         <li>
-            <x-card href="/assets/{{$asset['id']}}" :highlight="true">
-                <div>
-            <h3>{{ $asset }}</h3>
-            <p>{{$asset->requests}}</p>
+            <div class = "list-item">
+            <h3>{{ $asset->name }}</h3>
+            <p>{{$asset->colour->colour}} {{$asset->device->name}} </p>
+
             <div>
-            </x-card>
         </li>
         @endforeach
     </ul>
