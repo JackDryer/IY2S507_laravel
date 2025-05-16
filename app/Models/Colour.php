@@ -4,11 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Colour extends Model
 {
     /** @use HasFactory<\Database\Factories\ColourFactory> */
-    use HasFactory;
+    use HasFactory, Sortable;
+    protected $sortable = ["colour"];
     public function assets(){
         return $this->hasMany(Asset::class);
     }

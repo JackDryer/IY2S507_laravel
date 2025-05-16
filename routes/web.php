@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Models\Asset;
 use Illuminate\Support\Facades\Route;
 
@@ -18,10 +19,14 @@ Route::middleware(['guest'])->controller(AuthController::class)->group(function(
 });
 Route::post('/logout',[AuthController::class,'logout'])->name("logout")->middleware('auth');
 
-Route::middleware(['auth','admin'])->controller(AssetController::class)->group(function(){
-    Route::get('/assets', "index");
+Route::middleware(['auth'])->controller(AssetController::class)->group(function(){
     Route::get('/assets/create', "create");
     Route::get('/assets/{id}', "show");
+});
+Route::middleware(['auth'])->controller(UserController::class)->group(function(){
+    Route::get('/home', "home")->name("user.home"); 
+    Route::get('/available_assets', "showAvailableAssets")->name("user.available_assets"); 
+    Route::post('/available_assets', "requestAsset")->name("user.request_asset");
 });
 
 Route::middleware(['auth','admin'])->controller(AdminController::class)->group(function(){

@@ -1,6 +1,6 @@
 <x-layout>
     <h2>Pending User Requests</h2>
-    <table class="list-header">
+    <table class="custom-list-header">
         <thead>
             <tr>
                 <th> @sortablelink('name', 'Username')</th>
@@ -11,9 +11,9 @@
             @foreach ($user_requests as  $request)
             <tr>
             
-                    <td class = "uuuuu"><h3>{{$request->name }}</h3></td>
-                    <td class = "uuuuu"><p>{{$request->email}}</p></td>
-                    <td class = "uuuuu"><form action="{{route("admin.approve_user_request")}}" method="POST">
+                    <td class = "custom-list-item"><h3>{{$request->name }}</h3></td>
+                    <td class = "custom-list-item"><p>{{$request->email}}</p></td>
+                    <td class = "custom-list-item"><form action="{{route("admin.approve_user_request")}}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$request->id}}">
                         <button class="btn">Approve</button>

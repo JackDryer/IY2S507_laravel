@@ -4,7 +4,7 @@
         <thead>
             <tr>
                 <th> @sortablelink('name', 'Name')</th>
-                <th>@sortablelink('colour.colour', 'Colour',['hii' => 'there, friend'],) </th>
+                <th>@sortablelink('colour.colour', 'Colour') </th>
             </tr>
         {{-- This feels like there is an easier way --}}
         <tbody>
@@ -18,5 +18,5 @@
             @endforeach
         </tbody>
     </table>
-    {{$assets->links()}} 
+    {!! $assets->appends(\Request::except('page'))->render() !!}
 </x-layout>

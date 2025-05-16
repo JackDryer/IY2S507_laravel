@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Asset extends Model
 {
-    protected $fillable = ["serial_number","colour_id"];
+    protected $fillable = ["serial_number","colour_id","name"];
     /** @use HasFactory<\Database\Factories\AssetFactory> */
-    use HasFactory;
-
+    use HasFactory, Sortable;
+    protected $sortable = ["serial_number","name"];
     public function colour(){
         return $this->belongsTo(Colour::class);
     }
