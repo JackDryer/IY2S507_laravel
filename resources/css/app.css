@@ -57,7 +57,12 @@ body {
     @apply block w-full mt-2 mb-4 p-2;
     @apply bg-slate-600;
   }
-  
+  td {
+    @apply bg-gree rounded border border-slate-600 ;
+  }
+  table {
+  @apply bg-gree rounded border border-collapse border-slate-600 min-w-full;
+  }
   /* custom classes */
   .container {
     @apply max-w-screen-lg mx-auto px-12 py-8;
@@ -65,12 +70,7 @@ body {
   .card {
     @apply bg-slate-800 rounded border border-slate-600  my-2 flex justify-between items-center;
   }
-  .custom-list-item {
-    @apply bg-gree rounded border border-slate-600 ;
-  }
-  .custom-list-header {
-  @apply bg-gree rounded border border-collapse border-slate-600 min-w-full;
-  }
+
   .highlight {
     @apply border-l-4 border-l-red-500;
   }

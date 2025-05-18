@@ -1,26 +1,24 @@
 <x-layout>
     <h2>Loanable assets</h2>
-        <table class="custom-list-header">
+    <table>
         <thead>
             <tr>
                 <th> @sortablelink('name', 'Name')</th>
                 <th>@sortablelink('colour.colour', 'Colour') </th>
+                <th>@sortablelink('device.name', 'Device') </th>
             </tr>
-        {{-- This feels like there is an easier way --}}
-        <tbody>
+        </thead>
             @foreach ($assets as  $asset)
-            <tr>
-            
-                    <td class = "custom-list-item"><h3>{{ $asset->name }}</h3></td>
-                    <td class = "custom-list-item"><p>{{$asset->colour->colour}} {{$asset->device->name}}</p></td>
-                    <td class = "custom-list-item"><form action="{{route("user.request_asset")}}" method="POST">
+                <x-expandable-asset :asset="$asset">
+                    <form action="{{route("user.request_asset")}}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$asset->id}}">
-                        <button class="btn">Request</button>
-                    </form></td>
-                </tr>
+                        <td class="justify-center"> 
+                            <button class="btn block mx-auto">Request</button>
+                        </td>
+                    </form>
+                </x-expandable-asset>
             @endforeach
-        </tbody>
     </table>
     {!! $assets->appends(\Request::except('page'))->render() !!}
 </x-layout>
