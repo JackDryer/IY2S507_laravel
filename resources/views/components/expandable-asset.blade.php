@@ -12,7 +12,11 @@
             <table>
                 <tr>
                     <td><b>Brand</b></td>
-                    <td>{{$asset->device->brand->brand}}</td>
+                    <td>{{$asset->device->brand->brand}} 
+                        {{--<span style = "float: right">
+                            @sortablelink('device.brand', '⇵') // THIS DOES NOT WORK as its more than one level of sorting :(
+                        </span>--}}
+                    </td>
                 </tr>
                 <tr>
                     <td><b>RAM</b></td>
@@ -31,7 +35,7 @@
                         <table>
                             <tr>
                                 <td><b>Brand</b></td>
-                                <td>{{$asset->device->cpu->brand->brand}}</td>    
+                                <td>{{$asset->device->cpu->brand->brand}}</td>
                             </tr>
                             <tr>
                                 <td><b>Cores</b></td>
