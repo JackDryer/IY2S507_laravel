@@ -1,17 +1,21 @@
 <x-layout>
     <h2>Assigned assets</h2>
     <table>
-        <thead>
-            <tr>
-                <th> @sortablelink('name', 'Name')</th>
-                <th>@sortablelink('colour.colour', 'Colour') </th>
-                <th>@sortablelink('device.name', 'Device') </th>
-            </tr>
-            @foreach ($assets as  $asset)
+        <x-asset-table-headings/>
+            @foreach ($approved_assets as  $asset)
             <x-expandable-asset :asset="$asset"/>
             @endforeach
     </table>
-    {!! $assets->appends(\Request::except('page'))->render() !!}
+    {!! $approved_assets->appends(\Request::except('page'))->render() !!}
+    <br>
+    <h2>Pending assets</h2>
+    <table>
+        <x-asset-table-headings/>
+            @foreach ($pending_assets as  $asset)
+            <x-expandable-asset :asset="$asset"/>
+            @endforeach
+    </table>
+    {!! $pending_assets->appends(\Request::except('page'))->render() !!}
     <br>
     <a href ="{{route("user.available_assets")}}" class = "btn">Request an Asset</a>
 </x-layout>

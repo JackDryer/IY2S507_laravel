@@ -11,14 +11,20 @@ class UserController extends Controller
 {
     public function home(){
         $user_id = Auth::user()->id;
-        $assets = Asset::whereHas('requests', function ($query) {
+        $approved_assets = Asset::whereHas('requests', function ($query) {
             $query->where('user_id', Auth::id())
             ->where('status', 'approved');
         })
             ->sortable()
-            ->paginate(4);
+            ->paginate(4, ['*'], 'assignedAssets');
+        $pending_assets = Asset::whereHas('requests', function ($query) {
+            $query->where('user_id', Auth::id())
+            ->where('status', 'requested');
+        })
+            ->sortable()
+            ->paginate(4, ['*'], 'pendingAssets');
         //sortable('name')->paginate(4,['*'], 'cbShows');
-        return view('user.home',["assets" =>$assets]);
+        return view('user.home',["approved_assets" =>$approved_assets,"pending_assets"=>$pending_assets]);
     }
     public function showAvailableAssets(){
         $assets = Asset::whereDoesntHave('requests', function ($query) {
