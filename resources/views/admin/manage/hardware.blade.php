@@ -340,6 +340,12 @@
                                 <template x-if="editingDevice != {{ $device->id }}">
                                     <div>
                                         <button class="btn-small" @click="startEditingDevice({{ $device->id }})">Edit</button>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="action" value="delete_device">
+                                            <input type="hidden" name="id" value="{{ $device->id }}">
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')" @click.stop>Delete</button>
+                                        </form>
                                     </div>
                                 </template>
                                 <template x-if="editingDevice == {{ $device->id }}">
@@ -517,7 +523,15 @@
                     
                     <ul class="item-list">
                         @foreach ($colours as $colour)
-                            <li>{{ $colour->name }}</li>
+                            <li>
+                                {{ $colour->name }}
+                                <form action="{{ route('hardware.action') }}" method="POST" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="action" value="delete_colour">
+                                    <input type="hidden" name="id" value="{{ $colour->id }}">
+                                    <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure you want to delete this colour?')">Delete</button>
+                                </form>
+                            </li>
                         @endforeach
                     </ul>
                 </div>
@@ -539,14 +553,22 @@
                     
                     <ul class="item-list">
                         @foreach ($brands as $brand)
-                            <li>{{ $brand->name }}</li>
+                            <li>
+                                {{ $brand->name }}
+                                <form action="{{ route('hardware.action') }}" method="POST" class="inline">
+                                    @csrf
+                                    <input type="hidden" name="action" value="delete_brand">
+                                    <input type="hidden" name="id" value="{{ $brand->id }}">
+                                    <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure you want to delete this brand?')">Delete</button>
+                                </form>
+                            </li>
                         @endforeach
                     </ul>
                 </div>
             </div>
         </div>
     </div>
-
+    
     @if (session('success'))
         <div class="success-alert">
             {{ session('success') }}
@@ -563,7 +585,6 @@
                 
                 if (paginationLink) {
                     e.preventDefault();
-                    
                     // Get current tab from URL or Alpine.js state
                     const urlParams = new URLSearchParams(window.location.search);
                     const currentTab = urlParams.get('tab') || 'assets';
@@ -579,22 +600,26 @@
             
             // Handle sortable links to preserve tab
             document.body.addEventListener('click', function(e) {
-                // Find closest sortable link
-                const sortLink = e.target.closest('a[data-sortable]');
+                // We need to be more specific about which links to capture
+                // Check both for links with sort parameter and links with the sortable class
+                const target = e.target.closest('a[href*="sort="], a.sortable');
                 
-                if (sortLink) {
+                if (target && target.href) {
                     e.preventDefault();
-                    
                     // Get current tab from URL or Alpine.js state
                     const urlParams = new URLSearchParams(window.location.search);
                     const currentTab = urlParams.get('tab') || 'assets';
                     
-                    // Get link URL and add tab parameter
-                    let url = new URL(sortLink.href);
-                    url.searchParams.set('tab', currentTab);
-                    
-                    // Navigate to new URL
-                    window.location.href = url.toString();
+                    try {
+                        // Get link URL and add tab parameter
+                        let url = new URL(target.href);
+                        url.searchParams.set('tab', currentTab);
+                        
+                        // Navigate to new URL
+                        window.location.href = url.toString();
+                    } catch (error) {
+                        console.error("Error processing sortable link:", error);
+                    }
                 }
             });
         });

@@ -50,7 +50,7 @@ class HardwareController extends Controller
     {
         // Validate the action parameter
         $request->validate([
-            'action' => 'required|string|in:add_asset,delete_asset,add_device,add_cpu,add_colour,add_brand,update_asset,update_device,update_cpu'
+            'action' => 'required|string|in:add_asset,delete_asset,add_device,delete_device,add_cpu,delete_cpu,add_colour,delete_colour,add_brand,delete_brand,update_asset,update_device,update_cpu'
         ]);
         
         $action = $request->input('action');
@@ -203,6 +203,42 @@ class HardwareController extends Controller
                 ]);
                 \App\Models\Brand::create($validated);
                 $message = 'Brand created successfully';
+                $tab = 'other';
+                break;
+                
+            case 'delete_device':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:devices,id'
+                ]);
+                \App\Models\Device::find($validated['id'])->delete();
+                $message = 'Device deleted successfully';
+                $tab = 'devices';
+                break;
+                
+            case 'delete_cpu':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:cpus,id'
+                ]);
+                \App\Models\Cpu::find($validated['id'])->delete();
+                $message = 'CPU deleted successfully';
+                $tab = 'cpus';
+                break;
+                
+            case 'delete_colour':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:colours,id'
+                ]);
+                \App\Models\Colour::find($validated['id'])->delete();
+                $message = 'Colour deleted successfully';
+                $tab = 'other';
+                break;
+                
+            case 'delete_brand':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:brands,id'
+                ]);
+                \App\Models\Brand::find($validated['id'])->delete();
+                $message = 'Brand deleted successfully';
                 $tab = 'other';
                 break;
         }
