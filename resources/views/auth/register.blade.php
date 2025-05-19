@@ -4,7 +4,7 @@
 
     <h2>Register for an Account</h2>
 
-    <label for="name">Name:</label>
+    <label for="name">Username:</label>
     <input 
       type="text"
       name="name"
@@ -19,7 +19,27 @@
       value="{{ old('email') }}"
       required
     >
-
+    <label for="employee_no">Employee No:</label>
+    <input 
+      type="text"
+      name="employee_no"
+      value="{{ old('employee_no') }}"
+      required
+    >
+    <label for="first_name">First name:</label>
+    <input 
+      type="text"
+      name="first_name"
+      value="{{ old('first_name') }}"
+      required
+    >
+    <label for="last_name">Surname:</label>
+    <input 
+      type="text"
+      name="last_name"
+      value="{{ old('last_name') }}"
+      required
+    >
     <label for="password">Password:</label>
     <input 
       type="password"

@@ -13,6 +13,8 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            DepartmentSeeder::class]);
         User::factory(40)->create();
 
         /*User::factory()->create([

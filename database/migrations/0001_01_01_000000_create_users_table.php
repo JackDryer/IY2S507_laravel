@@ -17,8 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('employee_num')->unique();
             $table->string('first_name');
-            $table->string('surname');
+            $table->string('last_name');
+            $table->foreignID("department_id")->constrained()->onDelete("cascade");
             $table->rememberToken();
             $table->timestamps();
             $table->boolean('is_approved')->default(false);

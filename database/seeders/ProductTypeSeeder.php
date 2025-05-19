@@ -13,10 +13,10 @@ class ProductTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        ProductType::factory()->create(["type"=>"Desktop"]);
-        ProductType::factory()->create(["type"=>"Laptop"]);
-        ProductType::factory()->create(["type"=>"tablet"]);
-        ProductType::factory()->create(["type"=>"Mobile Phone"]);
+        ProductType::factory()->create(["name"=>"Desktop"]);
+        ProductType::factory()->create(["name"=>"Laptop"]);
+        ProductType::factory()->create(["name"=>"tablet"]);
+        ProductType::factory()->create(["name"=>"Mobile Phone"]);
 
     }
 }

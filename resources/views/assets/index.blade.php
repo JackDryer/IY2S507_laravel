@@ -12,7 +12,7 @@
             <tr>
             
                     <td class = "custom-list-item"><h3>{{ $asset->name }}</h3></td>
-                    <td class = "custom-list-item"><p>{{$asset->colour->colour}} {{$asset->device->name}}</p></td>
+                    <td class = "custom-list-item"><p>{{$asset->colour->name}} {{$asset->device->name}}</p></td>
                 </div>
             </tr>
             @endforeach

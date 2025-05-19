@@ -1,7 +1,7 @@
 <tbody  x-data="{ open: false,cpuopen:false }">
     <tr @click="open = !open" class = "cursor-pointer">
         <td><h3>{{ $asset->name }}</h3></td>
-        <td>{{$asset->colour->colour}}</td>
+        <td>{{$asset->colour->name}}</td>
         <td>{{$asset->device->name}}</td>
         @if($slot->isNotEmpty())
             {{$slot}}
@@ -12,7 +12,7 @@
             <table>
                 <tr>
                     <td><b>Brand</b></td>
-                    <td>{{$asset->device->brand->brand}} 
+                    <td>{{$asset->device->brand->name}} 
                         {{--<span style = "float: right">
                             @sortablelink('device.brand', '⇵') // THIS DOES NOT WORK as its more than one level of sorting :(
                         </span>--}}
@@ -35,7 +35,7 @@
                         <table>
                             <tr>
                                 <td><b>Brand</b></td>
-                                <td>{{$asset->device->cpu->brand->brand}}</td>
+                                <td>{{$asset->device->cpu->brand->name}}</td>
                             </tr>
                             <tr>
                                 <td><b>Cores</b></td>
@@ -50,7 +50,7 @@
                 </tr>
                 <tr>
                     <td><b>Type</b></td>
-                    <td>{{$asset->device->productType->type}}</td>
+                    <td>{{$asset->device->productType->name}}</td>
                 </tr>
             </table>
         </td>

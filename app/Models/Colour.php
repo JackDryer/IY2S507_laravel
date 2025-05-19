@@ -10,7 +10,7 @@ class Colour extends Model
 {
     /** @use HasFactory<\Database\Factories\ColourFactory> */
     use HasFactory, Sortable;
-    protected $sortable = ["colour"];
+    protected $sortable = ["name"];
     public function assets(){
         return $this->hasMany(Asset::class);
     }
