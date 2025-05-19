@@ -35,6 +35,11 @@ class UserController extends Controller
         return view('user.available_assets',["assets" =>$assets]);
     }
     public function requestAsset(Request $request){
+        if (AssetRequest::where("user_id",Auth::id())
+        ->whereNot("status","denied")
+        ->count() >= Auth::user()->device_limit){
+            return redirect()->route("user.available_assets")->with('success',"You have reached your device limit");
+        }
         $id = $request->validate([
             'id'=>'required|integer'
         ])["id"];
