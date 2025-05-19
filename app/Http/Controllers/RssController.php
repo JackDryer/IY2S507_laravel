@@ -9,7 +9,7 @@ use Vedmant\FeedReader\Facades\FeedReader;
 
 class RssController extends Controller
 {
-    public function updateFeeds()
+    public static function updateFeeds()
     {
     $feeds = RssFeed::all();
 
@@ -28,5 +28,18 @@ class RssController extends Controller
             );
         }
     }
+}
+
+/**
+ * Display a listing of RSS feeds
+ * 
+ * @return \Illuminate\View\View
+ */
+public function index()
+{
+    // Assuming you have a Feed model - adjust as needed for your actual data structure
+    $feeds = RssFeed::with('rssFeedItems')->get();
+    
+    return view('rss.index', compact('feeds'));
 }
 }

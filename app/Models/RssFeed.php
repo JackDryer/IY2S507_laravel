@@ -11,7 +11,7 @@ class RssFeed extends Model
     use HasFactory;
     protected $fillable = ['name', 'url', 'category'];
     public function rssFeedItems() {
-        return $this->hasMany(RssFeedItem::class);
+        return $this->hasMany(RssFeedItem::class,"feed_source_id");
     }
 }
 

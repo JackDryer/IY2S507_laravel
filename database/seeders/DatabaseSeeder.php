@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             DeviceSeeder::class,
             AssetSeeder::class,
             AssetRequestSeeder::class,
+            RssFeedSeeder::class,
         ]);
     }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\HardwareController;
+use App\Http\Controllers\RssController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -48,3 +49,5 @@ Route::middleware(['auth','admin'])->controller(HardwareController::class)->pref
     Route::get('/', "index")->name("index");
     Route::post('/', "handleAction")->name("action"); // Single endpoint for all actions
 });
+
+Route::get('/feeds', [RssController::class, 'index'])->name('feeds.index');
