@@ -4,7 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AssetController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
-use App\Models\Asset;
+use App\Http\Controllers\HardwareController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -33,6 +33,7 @@ Route::middleware(['auth'])->controller(UserController::class)->group(function()
     Route::post('/available_assets', "requestAsset")->name("user.request_asset");
 });
 
+// Admin routes focused on user and request management
 Route::middleware(['auth','admin'])->controller(AdminController::class)->group(function(){
     Route::get('/admin', "home")->name("admin.home");
     Route::get('/admin/user_requests', "showUserRequests")->name("admin.user_requests");
@@ -40,5 +41,10 @@ Route::middleware(['auth','admin'])->controller(AdminController::class)->group(f
     Route::get('/admin/asset_requests', "showAssetRequests")->name("admin.asset_requests");
     Route::post('/admin/asset_requests', "approveAssetRequest")->name("admin.approve_asset_request");
     Route::get('/admin/manage_users', "showManageUsers")->name("admin.manage_users");
-    Route::get('/admin/manage_assets', "showManageAssets")->name("admin.manage_assets");
+});
+
+// New hardware management routes with single POST endpoint
+Route::middleware(['auth','admin'])->controller(HardwareController::class)->prefix('admin/hardware')->name('hardware.')->group(function(){
+    Route::get('/', "index")->name("index");
+    Route::post('/', "handleAction")->name("action"); // Single endpoint for all actions
 });

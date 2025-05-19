@@ -8,10 +8,10 @@ use Kyslik\ColumnSortable\Sortable;
 
 class Cpu extends Model
 {
-    protected $fillable = ["name","clock_speed_htz","cache_bytes"];
+    protected $fillable = ["name","base_clock_speed_hz","brand_id","cores"];
     /** @use HasFactory<\Database\Factories\CpuFactory> */
     use HasFactory, Sortable;
-    protected $sortable = ["name","clock_speed_htz","cache_bytes"];
+    protected $sortable = ["name","base_clock_speed_hz","cores"];
     
     public function brand(){
         return $this->belongsTo(Brand::class);

@@ -8,7 +8,7 @@ use Kyslik\ColumnSortable\Sortable;
 
 class Asset extends Model
 {
-    protected $fillable = ["serial_number","colour_id","name"];
+    protected $fillable = ["serial_number","colour_id","name","device_id"];
     /** @use HasFactory<\Database\Factories\AssetFactory> */
     use HasFactory, Sortable;
     protected $sortable = ["serial_number","name"];

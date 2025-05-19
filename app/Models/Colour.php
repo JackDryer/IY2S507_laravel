@@ -11,6 +11,7 @@ class Colour extends Model
     /** @use HasFactory<\Database\Factories\ColourFactory> */
     use HasFactory, Sortable;
     protected $sortable = ["name"];
+    protected $fillable = ["name"];
     public function assets(){
         return $this->hasMany(Asset::class);
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Asset;
 use App\Models\AssetRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -45,6 +46,32 @@ class AdminController extends Controller
     public function showManageUsers (){
         $users = User::sortable()->paginate(10);
         return view ("admin.manage.users",["users" =>$users]);
+    }
+    public function addAsset(Request $request) {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:assets',
+            'serial_number' => 'required|string|max:255',
+            'colour_id' => 'required|exists:colours,id',
+            'device_id' => 'required|exists:devices,id'
+        ]);
+
+        Asset::create($validated);
+        return redirect()->route('admin.manage_assets')->with('success', 'Asset created successfully');
+    }
+
+    public function showManageAssets (){
+        $assets = Asset::with(["device","colour"])->sortable()->paginate(10);
+        return view ("admin.manage.assets",["assets" =>$assets]);
         
+    }
+    public function deleteAsset(Request $request) {
+        $validated = $request->validate([
+            'id' => 'required|integer|exists:assets,id'
+        ]);
+
+        $asset = Asset::find($validated['id']);
+        $asset->delete();
+
+        return redirect()->route('admin.manage_assets')->with('success', 'Asset deleted successfully');
     }
 }

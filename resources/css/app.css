@@ -13,67 +13,132 @@
 
 body {
     @apply bg-slate-900 text-amber-500;
-  }
-  h1 {
-    @apply text-2xl font-bold ;
-  }
-  h2 {
+}
+h1 {
+    @apply text-2xl font-bold;
+}
+h2 {
     @apply text-xl font-bold my-4;
-  }
-  h3 {
+}
+h3 {
     @apply text-lg font-bold my-4;
-  }
-  ul {
+}
+h4 {
+    @apply text-base font-bold my-2;
+}
+ul {
     @apply my-10;
-  }
-  p {
+}
+p {
     @apply my-2;
-  }
-  a {
+}
+a {
     @apply hover:text-slate-400
-  }
-  .btn {
+}
+.btn {
     @apply rounded px-3 py-2 bg-amber-500 text-slate-950 hover:bg-red-500 hover:text-white;
-  }
+}
   
-  /* header */
-  header {
+/* Header */
+header {
     @apply bg-slate-800;
   
     nav {
-      @apply flex items-center gap-5 max-w-screen-lg px-12 py-4 mx-auto;
+        @apply flex items-center gap-5 max-w-screen-lg px-12 py-4 mx-auto;
     }
     h1 {
-      @apply mr-auto;
+        @apply mr-auto;
     }
-
-  }
+}
   
-  /* form elements */
-  form {
+/* Form elements */
+form {
     @apply max-w-screen-sm;
-  }
-  input, select, textarea {
+}
+input, select, textarea {
     @apply block w-full mt-2 mb-4 p-2;
     @apply bg-slate-600;
-  }
-  td {
-    @apply bg-gree rounded border border-slate-600 ;
-  }
-  table {
-  @apply bg-gree rounded border border-collapse border-slate-600 min-w-full;
-  }
-  /* custom classes */
-  .container {
-    @apply max-w-screen-lg mx-auto px-12 py-8;
-  }
-  .card {
-    @apply bg-slate-800 rounded border border-slate-600  my-2 flex justify-between items-center;
-  }
+}
+td {
+    @apply bg-gree rounded border border-slate-600;
+}
+table {
+    @apply bg-gree rounded border border-collapse border-slate-600 min-w-full;
+}
 
-  .highlight {
+/* Custom classes */
+.container {
+    @apply max-w-screen-lg mx-auto px-12 py-8;
+}
+.card {
+    @apply bg-slate-800 rounded border border-slate-600 my-2 flex justify-between items-center;
+}
+.highlight {
     @apply border-l-4 border-l-red-500;
-  }
-  .flashbox {
+}
+.flashbox {
     @apply bg-yellow-500 border-t border-b text-black text-center px-4 py-3;
-  }
+}
+
+/* Tab navigation */
+.tabs {
+    @apply flex mb-4 border-b border-slate-600;
+}
+.tab-btn {
+    @apply px-4 py-2 border border-slate-600 bg-slate-800 text-amber-500 cursor-pointer mr-1 transition-all duration-200;
+}
+.tab-btn:hover {
+    @apply text-white bg-slate-700;
+}
+.tab-btn.active {
+    @apply bg-slate-700 border-b-2 border-b-amber-500 font-semibold;
+}
+.tab-content {
+    @apply p-5 border border-slate-600 bg-slate-800 rounded-md;
+}
+
+/* Forms */
+.create-form {
+    @apply mb-6 p-5 bg-slate-700 rounded-md border border-slate-600;
+}
+.inline-form {
+    @apply flex flex-wrap gap-3 items-end;
+}
+.form-group {
+    @apply mr-3;
+}
+.btn-small {
+    @apply rounded px-2 py-1 text-sm bg-amber-500 text-slate-950 hover:bg-red-500 hover:text-white;
+}
+.danger {
+    @apply bg-red-500 text-white hover:bg-red-600;
+}
+
+/* Grid layouts */
+.two-column-grid {
+    @apply grid grid-cols-2 gap-6;
+}
+.grid-item {
+    @apply bg-slate-800 border border-slate-600 rounded-lg p-5;
+}
+
+/* Lists */
+.item-list {
+    @apply list-none p-0 m-0;
+}
+.item-list li {
+    @apply py-3 px-2 border-b border-slate-600 text-amber-500;
+}
+.item-list li:last-child {
+    @apply border-b-0;
+}
+
+/* Alerts */
+.success-alert {
+    @apply mt-4 py-3 px-4 bg-green-900 text-green-300 border border-green-700 rounded-md;
+}
+
+/* Table styles */
+table thead th {
+    @apply text-left py-3 px-4 bg-slate-700 border-b-2 border-slate-600 font-semibold text-amber-400;
+}

@@ -10,6 +10,9 @@ class Device extends Model
 {
     /** @use HasFactory<\Database\Factories\DeviceFactory> */
     use HasFactory, Sortable;
+
+    protected $fillable = ["name", "ram_bytes","storage_bytes", "brand_id", "cpu_id", "product_type_id"];
+
     public function cpu(){
         return $this->belongsTo(Cpu::class);
     }

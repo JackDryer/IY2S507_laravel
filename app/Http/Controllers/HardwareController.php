@@ -1,0 +1,106 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Asset;
+use Illuminate\Http\Request;
+
+class HardwareController extends Controller
+{
+    public function index()
+    {
+        $assets = Asset::with(["device", "colour"])->sortable()->paginate(10, ['*'], 'assets');
+        $devices = \App\Models\Device::with(["brand", "cpu", "productType"])->sortable()->paginate(10, ['*'], 'devices');
+        $cpus = \App\Models\Cpu::with(["brand"])->sortable()->paginate(10, ['*'], 'cpus');
+        $colours = \App\Models\Colour::all();
+        $brands = \App\Models\Brand::all();
+        $productTypes = \App\Models\ProductType::all();
+        
+        return view("admin.manage.hardware", [
+            "assets" => $assets,
+            "devices" => $devices,
+            "cpus" => $cpus,
+            "colours" => $colours,
+            "brands" => $brands,
+            "productTypes" => $productTypes
+        ]);
+    }
+
+    public function handleAction(Request $request)
+    {
+        // Validate the action parameter
+        $request->validate([
+            'action' => 'required|string|in:add_asset,delete_asset,add_device,add_cpu,add_colour,add_brand'
+        ]);
+        
+        $action = $request->input('action');
+        $tab = 'assets'; // Default tab to return to
+        
+        switch($action) {
+            case 'add_asset':
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255|unique:assets',
+                    'serial_number' => 'required|string|max:255',
+                    'colour_id' => 'required|exists:colours,id',
+                    'device_id' => 'required|exists:devices,id'
+                ]);
+                Asset::create($validated);
+                $message = 'Asset created successfully';
+                break;
+                
+            case 'delete_asset':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:assets,id'
+                ]);
+                Asset::find($validated['id'])->delete();
+                $message = 'Asset deleted successfully';
+                break;
+                
+            case 'add_device':
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255|unique:devices',
+                    'ram_bytes' => 'required|integer',
+                    'storage_bytes' => 'required|integer',
+                    'brand_id' => 'required|exists:brands,id',
+                    'cpu_id' => 'required|exists:cpus,id',
+                    'product_type_id' => 'required|exists:product_types,id'
+                ]);
+                \App\Models\Device::create($validated);
+                $message = 'Device created successfully';
+                $tab = 'devices';
+                break;
+                
+            case 'add_cpu':
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255|unique:cpus',
+                    'base_clock_speed_hz' => 'required|integer',
+                    'cores' => 'required|integer',
+                    'brand_id' => 'required|exists:brands,id'
+                ]);
+                \App\Models\Cpu::create($validated);
+                $message = 'CPU created successfully';
+                $tab = 'cpus';
+                break;
+                
+            case 'add_colour':
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255|unique:colours'
+                ]);
+                \App\Models\Colour::create($validated);
+                $message = 'Colour created successfully';
+                $tab = 'other';
+                break;
+                
+            case 'add_brand':
+                $validated = $request->validate([
+                    'name' => 'required|string|max:255|unique:brands'
+                ]);
+                \App\Models\Brand::create($validated);
+                $message = 'Brand created successfully';
+                $tab = 'other';
+                break;
+        }
+        
+        return redirect()->route('hardware.index', ['tab' => $tab])->with('success', $message);
+    }
+}

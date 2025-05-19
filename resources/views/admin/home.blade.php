@@ -17,8 +17,8 @@
                 <a href = "{{ route('admin.manage_users') }}">
                     <p>Users</p>
                 </a>
-                <a href = "{{ route('admin.manage_assets') }}">
-                    <p>Assets</p>
+                <a href = "{{ route('hardware.index') }}">
+                    <p>Hardware</p>
                 </a>
             </u>
         </div>

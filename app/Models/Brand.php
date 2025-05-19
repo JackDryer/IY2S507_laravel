@@ -11,6 +11,7 @@ class Brand extends Model
     /** @use HasFactory<\Database\Factories\BrandFactory> */
     use HasFactory, Sortable;
     protected $sortable = ["name"]; 
+    protected $fillable = ["name"];
     public function cpus(){
         return $this->hasMany(Cpu::class);
     }
