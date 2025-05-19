@@ -39,4 +39,6 @@ Route::middleware(['auth','admin'])->controller(AdminController::class)->group(f
     Route::post('/admin/user_requests', "approveUserRequest")->name("admin.approve_user_request");
     Route::get('/admin/asset_requests', "showAssetRequests")->name("admin.asset_requests");
     Route::post('/admin/asset_requests', "approveAssetRequest")->name("admin.approve_asset_request");
+    Route::get('/admin/manage_users', "showManageUsers")->name("admin.manage_users");
+    Route::get('/admin/manage_assets', "showManageAssets")->name("admin.manage_assets");
 });

@@ -42,4 +42,9 @@ class AdminController extends Controller
         $asset_request->save();
         return redirect(route("admin.asset_requests"))->with("success","Asset Approved");
     }
+    public function showManageUsers (){
+        $users = User::sortable()->paginate(10);
+        return view ("admin.manage.users",["users" =>$users]);
+        
+    }
 }
