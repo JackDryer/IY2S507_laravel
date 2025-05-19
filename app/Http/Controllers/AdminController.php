@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class AdminController extends Controller
 {
     public function home (){
-        $user_requests = User::where("is_approved",false)->count();
+        $user_requests = User::where("status","requested")->count();
         $asset_requests = AssetRequest::where("status","requested")->count();
         return view ("admin.home",[
             "user_requests" =>$user_requests, 
@@ -17,7 +17,7 @@ class AdminController extends Controller
         ]);
     }
     public function showUserRequests (){
-        $user_requests = User::where("is_approved",false)->sortable()->paginate(10);
+        $user_requests = User::where("status","requested")->sortable()->paginate(10);
         return view ("admin.user_requests",["user_requests" =>$user_requests]);
     }
     public function approveUserRequest (Request $request){
@@ -25,7 +25,7 @@ class AdminController extends Controller
             'id'=>'required|integer'
         ]);
         $user = User::find($validated["id"]);
-        $user->is_approved =true;
+        $user->status ="active";
         $user->save();
         return redirect(route("admin.user_requests"))->with("success","User Approved");
     }

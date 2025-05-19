@@ -41,7 +41,7 @@ class AuthController extends Controller
         
         if (Auth::attemptWhen(
             $validated,
-            function (User $user) {return $user->is_approved;}
+            function (User $user) {return $user->status === "active";}
         )){
             $request->session()->regenerate();
             if (Auth::user()->is_admin){

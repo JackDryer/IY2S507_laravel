@@ -24,8 +24,7 @@ return new class extends Migration
             $table->foreignID("department_id")->constrained()->onDelete("cascade");
             $table->rememberToken();
             $table->timestamps();
-            $table->boolean('is_approved')->default(false);
-            $table->boolean('is_disabled')->default(false);
+            $table->enum("status",["requested","active","denied"])->default("requested");
             $table->boolean('is_admin')->default(false);
             $table->softDeletes();
         });
