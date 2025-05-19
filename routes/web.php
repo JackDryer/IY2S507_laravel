@@ -50,4 +50,6 @@ Route::middleware(['auth','admin'])->controller(HardwareController::class)->pref
     Route::post('/', "handleAction")->name("action"); // Single endpoint for all actions
 });
 
-Route::get('/feeds', [RssController::class, 'index'])->name('feeds.index');
+Route::get('/feeds', [RssController::class, 'index'])->middleware('auth')->name('feeds.index');
+Route::get('/admin/add_rss', [RssController::class, 'create'])->middleware(['auth','admin'])->name('feeds.create');
+Route::post('/admin/add_rss', [RssController::class, 'store'])->middleware(['auth','admin'])->name('feeds.store');

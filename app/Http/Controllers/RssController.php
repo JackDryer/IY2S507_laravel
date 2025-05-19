@@ -42,4 +42,34 @@ public function index()
     
     return view('rss.index', compact('feeds'));
 }
+
+/**
+ * Show the form for creating a new RSS feed
+ * 
+ * @return \Illuminate\View\View
+ */
+public function create()
+{
+    return view('rss.create');
+}
+
+/**
+ * Store a newly created RSS feed
+ * 
+ * @param \Illuminate\Http\Request $request
+ * @return \Illuminate\Http\RedirectResponse
+ */
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255|unique:rss_feeds,name',
+        'url' => 'required|url|unique:rss_feeds,url',
+        'category' => 'nullable|string|max:255',
+    ]);
+    
+    RssFeed::create($validated);
+    
+    return redirect()->route('feeds.index')
+        ->with('success', 'RSS feed added successfully!');
+}
 }
