@@ -6,11 +6,15 @@
         editingAsset: null,
         editingDevice: null,
         editingCpu: null,
+        editingColour: null,
+        editingBrand: null,
         switchTab(tab) {
             this.activeTab = tab;
             this.editingAsset = null;
             this.editingDevice = null;
             this.editingCpu = null;
+            this.editingColour = null;
+            this.editingBrand = null;
             // Update URL without page reload
             const url = new URL(window.location.href);
             url.searchParams.set('tab', tab);
@@ -31,10 +35,20 @@
             this.editingAsset = null;
             this.editingDevice = null;
         },
+        startEditingColour(id) {
+            this.editingColour = id;
+            this.editingBrand = null;
+        },
+        startEditingBrand(id) {
+            this.editingBrand = id;
+            this.editingColour = null;
+        },
         cancelEditing() {
             this.editingAsset = null;
             this.editingDevice = null;
             this.editingCpu = null;
+            this.editingColour = null;
+            this.editingBrand = null;
         }
     }">
         <!-- Tab Navigation -->
@@ -339,7 +353,6 @@
                             <td>
                                 <template x-if="editingDevice != {{ $device->id }}">
                                     <div>
-                                        <button class="btn-small" @click="startEditingDevice({{ $device->id }})">Edit</button>
                                         <form action="{{ route('hardware.action') }}" method="POST" class="inline">
                                             @csrf
                                             <input type="hidden" name="action" value="delete_device">
@@ -471,7 +484,6 @@
                             <td>
                                 <template x-if="editingCpu != {{ $cpu->id }}">
                                     <div>
-                                        <button class="btn-small" @click="startEditingCpu({{ $cpu->id }})">Edit</button>
                                         <form action="{{ route('hardware.action') }}" method="POST" class="inline">
                                             @csrf
                                             <input type="hidden" name="action" value="delete_cpu">
@@ -523,14 +535,32 @@
                     
                     <ul class="item-list">
                         @foreach ($colours as $colour)
-                            <li>
-                                {{ $colour->name }}
-                                <form action="{{ route('hardware.action') }}" method="POST" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="action" value="delete_colour">
-                                    <input type="hidden" name="id" value="{{ $colour->id }}">
-                                    <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure you want to delete this colour?')">Delete</button>
-                                </form>
+                            <li x-data="{ colour: { id: {{ $colour->id }}, name: '{{ $colour->name }}' } }"
+                                @click="editingColour != {{ $colour->id }} && startEditingColour({{ $colour->id }})"
+                                :class="{ 'editing': editingColour == {{ $colour->id }} }">
+                                <template x-if="editingColour != {{ $colour->id }}">
+                                    <span>
+                                        {{ $colour->name }}
+                                    </span>
+                                </template>
+                                <template x-if="editingColour == {{ $colour->id }}">
+                                    <span>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="update_colour">
+                                            <input type="hidden" name="id" value="{{ $colour->id }}">
+                                            <input type="text" name="name" x-model="colour.name" class="inline-edit" @click.stop>
+                                            <button type="submit" class="btn-small success" @click.stop>Save</button>
+                                        </form>
+                                        <button class="btn-small" @click.stop="cancelEditing()">Cancel</button>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="delete_colour">
+                                            <input type="hidden" name="id" value="{{ $colour->id }}">
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+                                    </span>
+                                </template>
                             </li>
                         @endforeach
                     </ul>
@@ -553,14 +583,32 @@
                     
                     <ul class="item-list">
                         @foreach ($brands as $brand)
-                            <li>
-                                {{ $brand->name }}
-                                <form action="{{ route('hardware.action') }}" method="POST" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="action" value="delete_brand">
-                                    <input type="hidden" name="id" value="{{ $brand->id }}">
-                                    <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure you want to delete this brand?')">Delete</button>
-                                </form>
+                            <li x-data="{ brand: { id: {{ $brand->id }}, name: '{{ $brand->name }}' } }"
+                                @click="editingBrand != {{ $brand->id }} && startEditingBrand({{ $brand->id }})"
+                                :class="{ 'editing': editingBrand == {{ $brand->id }} }">
+                                <template x-if="editingBrand != {{ $brand->id }}">
+                                    <span>
+                                        {{ $brand->name }}
+                                    </span>
+                                </template>
+                                <template x-if="editingBrand == {{ $brand->id }}">
+                                    <span>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="update_brand">
+                                            <input type="hidden" name="id" value="{{ $brand->id }}">
+                                            <input type="text" name="name" x-model="brand.name" class="inline-edit" @click.stop>
+                                            <button type="submit" class="btn-small success" @click.stop>Save</button>
+                                        </form>
+                                        <button class="btn-small" @click.stop="cancelEditing()">Cancel</button>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="delete_brand">
+                                            <input type="hidden" name="id" value="{{ $brand->id }}">
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+                                    </span>
+                                </template>
                             </li>
                         @endforeach
                     </ul>

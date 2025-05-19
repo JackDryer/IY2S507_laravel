@@ -50,7 +50,7 @@ class HardwareController extends Controller
     {
         // Validate the action parameter
         $request->validate([
-            'action' => 'required|string|in:add_asset,delete_asset,add_device,delete_device,add_cpu,delete_cpu,add_colour,delete_colour,add_brand,delete_brand,update_asset,update_device,update_cpu'
+            'action' => 'required|string|in:add_asset,delete_asset,add_device,delete_device,add_cpu,delete_cpu,add_colour,delete_colour,add_brand,delete_brand,update_asset,update_device,update_cpu,update_colour,update_brand'
         ]);
         
         $action = $request->input('action');
@@ -239,6 +239,36 @@ class HardwareController extends Controller
                 ]);
                 \App\Models\Brand::find($validated['id'])->delete();
                 $message = 'Brand deleted successfully';
+                $tab = 'other';
+                break;
+                
+            case 'update_colour':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:colours,id',
+                    'name' => 'required|string|max:255'
+                ]);
+                
+                $colour = \App\Models\Colour::find($validated['id']);
+                $colour->update([
+                    'name' => $validated['name']
+                ]);
+                
+                $message = 'Colour updated successfully';
+                $tab = 'other';
+                break;
+                
+            case 'update_brand':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:brands,id',
+                    'name' => 'required|string|max:255'
+                ]);
+                
+                $brand = \App\Models\Brand::find($validated['id']);
+                $brand->update([
+                    'name' => $validated['name']
+                ]);
+                
+                $message = 'Brand updated successfully';
                 $tab = 'other';
                 break;
         }
