@@ -1,26 +1,40 @@
 <x-layout>
-<div class="container">
-    <h1 class="mb-4">RSS Feeds</h1>
+    <div class="container">
+        <h1 class="page-title">RSS Feeds</h1>
 
-    @forelse($feeds as $feed)
-        <div class="card mb-4">
-            <div class="card-header">
-                <h2>{{ $feed->title }}</h2>
-                <small class="text-muted">{{ $feed->url }}</small>
-            </div>
-            <div class="card-body">
-                @forelse($feed->rssFeedItems as $item)
-                    <div class="mb-3 pb-3 border-bottom">
-                        <h5><a href="{{ $item->link }}" target="_blank">{{ $item->title }}</a></h5>
-                        <div>{{ $item->description }}</div>
-                        <small class="text-muted">Published: {{ $item->published_at }}</small>
+        @forelse($feeds as $feed)
+            <div class="feed-card">
+                <div class="feed-header">
+                    <h2>{{ $feed->name }}</h2>
+                    <div class="feed-meta">
+                        <span class="feed-url">{{ $feed->url }}</span>
+                        @if($feed->category)
+                            <span class="feed-category">{{ $feed->category }}</span>
+                        @endif
                     </div>
-                @empty
-                    <p>No items in this feed.</p>
-                @endforelse
+                </div>
+                <div class="feed-body">
+                    @forelse($feed->rssFeedItems as $item)
+                        <div class="feed-item">
+                            <h3 class="feed-item-title">
+                                <a href="{{ $item->link }}" target="_blank" rel="noopener">
+                                    {{ $item->title }}
+                                </a>
+                            </h3>
+                            <div class="feed-item-content">
+                                {!! $item->description !!}
+                            </div>
+                            <div class="feed-item-date">
+                                Published: {{ \Carbon\Carbon::parse($item->pub_date)->format('M d, Y - g:i A') }}
+                            </div>
+                        </div>
+                    @empty
+                        <p class="empty-message">No items in this feed.</p>
+                    @endforelse
+                </div>
             </div>
-        </div>
-    @empty
-        <div class="alert alert-info">No feeds available.</div>
-    @endforelse
+        @empty
+            <div class="empty-feeds">No feeds available. Add some RSS feeds to get started!</div>
+        @endforelse
+    </div>
 </x-layout>
