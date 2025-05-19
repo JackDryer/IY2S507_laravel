@@ -22,8 +22,8 @@ class DeviceFactory extends Factory
     {
         return [
             "name"=> fake()->unique()->regexify("[A-Z]{1,4}[0-4]{1,3}"),
-            "ram_bytes" => fake()->numberBetween(2,16)*1000*1000*1000,
-            "storage_bytes" => fake()->numberBetween(16,256)*1000*1000*1000,
+            "ram_bytes" => pow(2,fake()->numberBetween(1,6))*1073741824,
+            "storage_bytes" => pow(2,fake()->numberBetween(3,1))*1073741824,
             "cpu_id" => Cpu::inRandomOrder()->first()->id,
             "brand_id"=>Brand::inRandomOrder()->first()->id,
             "product_type_id" =>ProductType::inRandomOrder()->first()->id,

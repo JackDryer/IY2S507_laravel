@@ -59,13 +59,24 @@ class HardwareController extends Controller
             case 'add_device':
                 $validated = $request->validate([
                     'name' => 'required|string|max:255|unique:devices',
-                    'ram_bytes' => 'required|integer',
-                    'storage_bytes' => 'required|integer',
+                    'ram_gb' => 'required|numeric',
+                    'storage_gb' => 'required|numeric',
                     'brand_id' => 'required|exists:brands,id',
                     'cpu_id' => 'required|exists:cpus,id',
                     'product_type_id' => 'required|exists:product_types,id'
                 ]);
-                \App\Models\Device::create($validated);
+                
+                // Convert GB to bytes (1 GB = 1,073,741,824 bytes)
+                $deviceData = [
+                    'name' => $validated['name'],
+                    'ram_bytes' => (int)($validated['ram_gb'] * 1073741824),
+                    'storage_bytes' => (int)($validated['storage_gb'] * 1073741824),
+                    'brand_id' => $validated['brand_id'],
+                    'cpu_id' => $validated['cpu_id'],
+                    'product_type_id' => $validated['product_type_id']
+                ];
+                
+                \App\Models\Device::create($deviceData);
                 $message = 'Device created successfully';
                 $tab = 'devices';
                 break;
@@ -73,11 +84,20 @@ class HardwareController extends Controller
             case 'add_cpu':
                 $validated = $request->validate([
                     'name' => 'required|string|max:255|unique:cpus',
-                    'base_clock_speed_hz' => 'required|integer',
+                    'base_clock_speed_ghz' => 'required|numeric',
                     'cores' => 'required|integer',
                     'brand_id' => 'required|exists:brands,id'
                 ]);
-                \App\Models\Cpu::create($validated);
+                
+                // Convert GHz to Hz (1 GHz = 1,000,000,000 Hz)
+                $cpuData = [
+                    'name' => $validated['name'],
+                    'base_clock_speed_hz' => (int)($validated['base_clock_speed_ghz'] * 1000000000),
+                    'cores' => $validated['cores'],
+                    'brand_id' => $validated['brand_id']
+                ];
+                
+                \App\Models\Cpu::create($cpuData);
                 $message = 'CPU created successfully';
                 $tab = 'cpus';
                 break;

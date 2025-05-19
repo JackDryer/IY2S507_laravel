@@ -107,10 +107,10 @@
                         <input type="text" name="name" placeholder="Device Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" name="ram_bytes" placeholder="RAM (bytes)" required>
+                        <input type="number" name="ram_gb" placeholder="RAM (GB)" step="0.01" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" name="storage_bytes" placeholder="Storage (bytes)" required>
+                        <input type="number" name="storage_gb" placeholder="Storage (GB)" step="0.01" required>
                     </div>
                     <div class="form-group">
                         <select name="brand_id" required>
@@ -155,8 +155,8 @@
                     @foreach ($devices as $device)
                         <tr>
                             <td>{{ $device->name }}</td>
-                            <td>{{ $device->ram_bytes }}</td>
-                            <td>{{ $device->storage_bytes }}</td>
+                            <td>{{ number_format($device->ram_bytes / 1073741824, 2) }} GB</td>
+                            <td>{{ number_format($device->storage_bytes / 1073741824, 2) }} GB</td>
                             <td>{{ $device->brand->name ?? 'N/A' }}</td>
                             <td>{{ $device->cpu->name ?? 'N/A' }}</td>
                             <td>{{ $device->productType->name ?? 'N/A' }}</td>
@@ -180,7 +180,7 @@
                         <input type="text" name="name" placeholder="CPU Name" required>
                     </div>
                     <div class="form-group">
-                        <input type="number" name="base_clock_speed_hz" placeholder="Base Clock Speed (Hz)" required>
+                        <input type="number" name="base_clock_speed_ghz" placeholder="Base Clock Speed (GHz)" step="0.01" required>
                     </div>
                     <div class="form-group">
                         <input type="number" name="cores" placeholder="Number of Cores" required>
@@ -210,7 +210,7 @@
                     @foreach ($cpus as $cpu)
                         <tr>
                             <td>{{ $cpu->name }}</td>
-                            <td>{{ $cpu->base_clock_speed_hz }}</td>
+                            <td>{{ number_format($cpu->base_clock_speed_hz / 1000000000, 2) }} GHz</td>
                             <td>{{ $cpu->cores }}</td>
                             <td>{{ $cpu->brand->name ?? 'N/A' }}</td>
                         </tr>
