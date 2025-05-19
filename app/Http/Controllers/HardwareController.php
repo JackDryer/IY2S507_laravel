@@ -50,7 +50,7 @@ class HardwareController extends Controller
     {
         // Validate the action parameter
         $request->validate([
-            'action' => 'required|string|in:add_asset,delete_asset,add_device,add_cpu,add_colour,add_brand'
+            'action' => 'required|string|in:add_asset,delete_asset,add_device,add_cpu,add_colour,add_brand,update_asset,update_device,update_cpu'
         ]);
         
         $action = $request->input('action');
@@ -74,6 +74,26 @@ class HardwareController extends Controller
                 ]);
                 Asset::find($validated['id'])->delete();
                 $message = 'Asset deleted successfully';
+                break;
+            
+            case 'update_asset':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:assets,id',
+                    'name' => 'required|string|max:255',
+                    'serial_number' => 'required|string|max:255',
+                    'colour_id' => 'required|exists:colours,id',
+                    'device_id' => 'required|exists:devices,id'
+                ]);
+                
+                $asset = Asset::find($validated['id']);
+                $asset->update([
+                    'name' => $validated['name'],
+                    'serial_number' => $validated['serial_number'],
+                    'colour_id' => $validated['colour_id'],
+                    'device_id' => $validated['device_id']
+                ]);
+                
+                $message = 'Asset updated successfully';
                 break;
                 
             case 'add_device':
@@ -101,6 +121,31 @@ class HardwareController extends Controller
                 $tab = 'devices';
                 break;
                 
+            case 'update_device':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:devices,id',
+                    'name' => 'required|string|max:255',
+                    'ram_gb' => 'required|numeric',
+                    'storage_gb' => 'required|numeric',
+                    'brand_id' => 'required|exists:brands,id',
+                    'cpu_id' => 'required|exists:cpus,id',
+                    'product_type_id' => 'required|exists:product_types,id'
+                ]);
+                
+                $device = \App\Models\Device::find($validated['id']);
+                $device->update([
+                    'name' => $validated['name'],
+                    'ram_bytes' => (int)($validated['ram_gb'] * 1073741824),
+                    'storage_bytes' => (int)($validated['storage_gb'] * 1073741824),
+                    'brand_id' => $validated['brand_id'],
+                    'cpu_id' => $validated['cpu_id'],
+                    'product_type_id' => $validated['product_type_id']
+                ]);
+                
+                $message = 'Device updated successfully';
+                $tab = 'devices';
+                break;
+                
             case 'add_cpu':
                 $validated = $request->validate([
                     'name' => 'required|string|max:255|unique:cpus',
@@ -119,6 +164,27 @@ class HardwareController extends Controller
                 
                 \App\Models\Cpu::create($cpuData);
                 $message = 'CPU created successfully';
+                $tab = 'cpus';
+                break;
+                
+            case 'update_cpu':
+                $validated = $request->validate([
+                    'id' => 'required|integer|exists:cpus,id',
+                    'name' => 'required|string|max:255',
+                    'base_clock_speed_ghz' => 'required|numeric',
+                    'cores' => 'required|integer',
+                    'brand_id' => 'required|exists:brands,id'
+                ]);
+                
+                $cpu = \App\Models\Cpu::find($validated['id']);
+                $cpu->update([
+                    'name' => $validated['name'],
+                    'base_clock_speed_hz' => (int)($validated['base_clock_speed_ghz'] * 1000000000),
+                    'cores' => $validated['cores'],
+                    'brand_id' => $validated['brand_id']
+                ]);
+                
+                $message = 'CPU updated successfully';
                 $tab = 'cpus';
                 break;
                 

@@ -3,12 +3,38 @@
 
     <div x-data="{ 
         activeTab: '{{ request()->query('tab', 'assets') }}',
+        editingAsset: null,
+        editingDevice: null,
+        editingCpu: null,
         switchTab(tab) {
             this.activeTab = tab;
+            this.editingAsset = null;
+            this.editingDevice = null;
+            this.editingCpu = null;
             // Update URL without page reload
             const url = new URL(window.location.href);
             url.searchParams.set('tab', tab);
             history.pushState({}, '', url);
+        },
+        startEditingAsset(id) {
+            this.editingAsset = id;
+            this.editingDevice = null;
+            this.editingCpu = null;
+        },
+        startEditingDevice(id) {
+            this.editingDevice = id;
+            this.editingAsset = null;
+            this.editingCpu = null;
+        },
+        startEditingCpu(id) {
+            this.editingCpu = id;
+            this.editingAsset = null;
+            this.editingDevice = null;
+        },
+        cancelEditing() {
+            this.editingAsset = null;
+            this.editingDevice = null;
+            this.editingCpu = null;
         }
     }">
         <!-- Tab Navigation -->
@@ -86,19 +112,81 @@
                 </thead>
                 <tbody>
                     @foreach ($assets as $asset)
-                        <tr>
-                            <td>{{ $asset->name }}</td>
-                            <td>{{ $asset->serial_number }}</td>
-                            <td>{{ $asset->colour->name ?? 'N/A' }}</td>
-                            <td>{{ $asset->device->name ?? 'N/A' }}</td>
+                        <tr 
+                            x-data="{ asset: {{ json_encode($asset) }} }"
+                            @click="editingAsset != {{ $asset->id }} && startEditingAsset({{ $asset->id }})"
+                            :class="{ 'editing': editingAsset == {{ $asset->id }} }"
+                        >
+                            <template x-if="editingAsset != {{ $asset->id }}">
+                                <td>{{ $asset->name }}</td>
+                            </template>
+                            <template x-if="editingAsset == {{ $asset->id }}">
+                                <td>
+                                    <input type="text" name="name" x-model="asset.name" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingAsset != {{ $asset->id }}">
+                                <td>{{ $asset->serial_number }}</td>
+                            </template>
+                            <template x-if="editingAsset == {{ $asset->id }}">
+                                <td>
+                                    <input type="text" name="serial_number" x-model="asset.serial_number" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingAsset != {{ $asset->id }}">
+                                <td>{{ $asset->colour->name ?? 'N/A' }}</td>
+                            </template>
+                            <template x-if="editingAsset == {{ $asset->id }}">
+                                <td>
+                                    <select name="colour_id" x-model="asset.colour_id" class="inline-edit" @click.stop>
+                                        @foreach ($colours as $colour)
+                                            <option value="{{ $colour->id }}">{{ $colour->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingAsset != {{ $asset->id }}">
+                                <td>{{ $asset->device->name ?? 'N/A' }}</td>
+                            </template>
+                            <template x-if="editingAsset == {{ $asset->id }}">
+                                <td>
+                                    <select name="device_id" x-model="asset.device_id" class="inline-edit" @click.stop>
+                                        @foreach ($devices as $device)
+                                            <option value="{{ $device->id }}">{{ $device->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </template>
+                            
                             <td>
-                                <!-- For deleting assets -->
-                                <form action="{{ route('hardware.action') }}" method="POST" class="inline">
-                                    @csrf
-                                    <input type="hidden" name="action" value="delete_asset">
-                                    <input type="hidden" name="id" value="{{ $asset->id }}">
-                                    <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')">Delete</button>
-                                </form>
+                                <template x-if="editingAsset != {{ $asset->id }}">
+                                    <div>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="action" value="delete_asset">
+                                            <input type="hidden" name="id" value="{{ $asset->id }}">
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')" @click.stop>Delete</button>
+                                        </form>
+                                    </div>
+                                </template>
+                                <template x-if="editingAsset == {{ $asset->id }}">
+                                    <div>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="update_asset">
+                                            <input type="hidden" name="id" value="{{ $asset->id }}">
+                                            <input type="hidden" name="name" :value="asset.name">
+                                            <input type="hidden" name="serial_number" :value="asset.serial_number">
+                                            <input type="hidden" name="colour_id" :value="asset.colour_id">
+                                            <input type="hidden" name="device_id" :value="asset.device_id">
+                                            <button type="submit" class="btn-small success" @click.stop>Save</button>
+                                        </form>
+                                        <button class="btn-small" @click.stop="cancelEditing()">Cancel</button>
+                                    </div>
+                                </template>
                             </td>
                         </tr>
                     @endforeach
@@ -162,17 +250,116 @@
                         <th>Brand</th>
                         <th>CPU</th>
                         <th>Type</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($devices as $device)
-                        <tr>
-                            <td>{{ $device->name }}</td>
-                            <td>{{ number_format($device->ram_bytes / 1073741824, 2) }} GB</td>
-                            <td>{{ number_format($device->storage_bytes / 1073741824, 2) }} GB</td>
-                            <td>{{ $device->brand->name ?? 'N/A' }}</td>
-                            <td>{{ $device->cpu->name ?? 'N/A' }}</td>
-                            <td>{{ $device->productType->name ?? 'N/A' }}</td>
+                        <tr 
+                            x-data="{ 
+                                device: {
+                                    id: {{ $device->id }},
+                                    name: '{{ $device->name }}',
+                                    ram_gb: {{ number_format($device->ram_bytes / 1073741824, 2) }},
+                                    storage_gb: {{ number_format($device->storage_bytes / 1073741824, 2) }},
+                                    brand_id: {{ $device->brand->id ?? 'null' }},
+                                    cpu_id: {{ $device->cpu->id ?? 'null' }},
+                                    product_type_id: {{ $device->productType->id ?? 'null' }}
+                                }
+                            }"
+                            @click="editingDevice != {{ $device->id }} && startEditingDevice({{ $device->id }})"
+                            :class="{ 'editing': editingDevice == {{ $device->id }} }"
+                        >
+                            <template x-if="editingDevice != {{ $device->id }}">
+                                <td>{{ $device->name }}</td>
+                            </template>
+                            <template x-if="editingDevice == {{ $device->id }}">
+                                <td>
+                                    <input type="text" name="name" x-model="device.name" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingDevice != {{ $device->id }}">
+                                <td>{{ number_format($device->ram_bytes / 1073741824, 2) }} GB</td>
+                            </template>
+                            <template x-if="editingDevice == {{ $device->id }}">
+                                <td>
+                                    <input type="number" name="ram_gb" x-model="device.ram_gb" step="0.01" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingDevice != {{ $device->id }}">
+                                <td>{{ number_format($device->storage_bytes / 1073741824, 2) }} GB</td>
+                            </template>
+                            <template x-if="editingDevice == {{ $device->id }}">
+                                <td>
+                                    <input type="number" name="storage_gb" x-model="device.storage_gb" step="0.01" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingDevice != {{ $device->id }}">
+                                <td>{{ $device->brand->name ?? 'N/A' }}</td>
+                            </template>
+                            <template x-if="editingDevice == {{ $device->id }}">
+                                <td>
+                                    <select name="brand_id" x-model="device.brand_id" class="inline-edit" @click.stop>
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingDevice != {{ $device->id }}">
+                                <td>{{ $device->cpu->name ?? 'N/A' }}</td>
+                            </template>
+                            <template x-if="editingDevice == {{ $device->id }}">
+                                <td>
+                                    <select name="cpu_id" x-model="device.cpu_id" class="inline-edit" @click.stop>
+                                        @foreach ($cpus as $cpu)
+                                            <option value="{{ $cpu->id }}">{{ $cpu->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingDevice != {{ $device->id }}">
+                                <td>{{ $device->productType->name ?? 'N/A' }}</td>
+                            </template>
+                            <template x-if="editingDevice == {{ $device->id }}">
+                                <td>
+                                    <select name="product_type_id" x-model="device.product_type_id" class="inline-edit" @click.stop>
+                                        @foreach ($productTypes as $type)
+                                            <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </template>
+                            
+                            <td>
+                                <template x-if="editingDevice != {{ $device->id }}">
+                                    <div>
+                                        <button class="btn-small" @click="startEditingDevice({{ $device->id }})">Edit</button>
+                                    </div>
+                                </template>
+                                <template x-if="editingDevice == {{ $device->id }}">
+                                    <div>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="update_device">
+                                            <input type="hidden" name="id" value="{{ $device->id }}">
+                                            <input type="hidden" name="name" :value="device.name">
+                                            <input type="hidden" name="ram_gb" :value="device.ram_gb">
+                                            <input type="hidden" name="storage_gb" :value="device.storage_gb">
+                                            <input type="hidden" name="brand_id" :value="device.brand_id">
+                                            <input type="hidden" name="cpu_id" :value="device.cpu_id">
+                                            <input type="hidden" name="product_type_id" :value="device.product_type_id">
+                                            <button type="submit" class="btn-small success" @click.stop>Save</button>
+                                        </form>
+                                        <button class="btn-small" @click.stop="cancelEditing()">Cancel</button>
+                                    </div>
+                                </template>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -217,15 +404,92 @@
                         <th>@sortablelink('base_clock_speed_hz', 'Clock Speed', null, ['tab' => 'cpus'])</th>
                         <th>@sortablelink('cores', 'Cores', null, ['tab' => 'cpus'])</th>
                         <th>Brand</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($cpus as $cpu)
-                        <tr>
-                            <td>{{ $cpu->name }}</td>
-                            <td>{{ number_format($cpu->base_clock_speed_hz / 1000000000, 2) }} GHz</td>
-                            <td>{{ $cpu->cores }}</td>
-                            <td>{{ $cpu->brand->name ?? 'N/A' }}</td>
+                        <tr 
+                            x-data="{ 
+                                cpu: {
+                                    id: {{ $cpu->id }},
+                                    name: '{{ $cpu->name }}',
+                                    base_clock_speed_ghz: {{ number_format($cpu->base_clock_speed_hz / 1000000000, 2) }},
+                                    cores: {{ $cpu->cores }},
+                                    brand_id: {{ $cpu->brand->id ?? 'null' }}
+                                }
+                            }"
+                            @click="editingCpu != {{ $cpu->id }} && startEditingCpu({{ $cpu->id }})"
+                            :class="{ 'editing': editingCpu == {{ $cpu->id }} }"
+                        >
+                            <template x-if="editingCpu != {{ $cpu->id }}">
+                                <td>{{ $cpu->name }}</td>
+                            </template>
+                            <template x-if="editingCpu == {{ $cpu->id }}">
+                                <td>
+                                    <input type="text" name="name" x-model="cpu.name" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingCpu != {{ $cpu->id }}">
+                                <td>{{ number_format($cpu->base_clock_speed_hz / 1000000000, 2) }} GHz</td>
+                            </template>
+                            <template x-if="editingCpu == {{ $cpu->id }}">
+                                <td>
+                                    <input type="number" name="base_clock_speed_ghz" x-model="cpu.base_clock_speed_ghz" step="0.01" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingCpu != {{ $cpu->id }}">
+                                <td>{{ $cpu->cores }}</td>
+                            </template>
+                            <template x-if="editingCpu == {{ $cpu->id }}">
+                                <td>
+                                    <input type="number" name="cores" x-model="cpu.cores" class="inline-edit" @click.stop>
+                                </td>
+                            </template>
+                            
+                            <template x-if="editingCpu != {{ $cpu->id }}">
+                                <td>{{ $cpu->brand->name ?? 'N/A' }}</td>
+                            </template>
+                            <template x-if="editingCpu == {{ $cpu->id }}">
+                                <td>
+                                    <select name="brand_id" x-model="cpu.brand_id" class="inline-edit" @click.stop>
+                                        @foreach ($brands as $brand)
+                                            <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </td>
+                            </template>
+                            
+                            <td>
+                                <template x-if="editingCpu != {{ $cpu->id }}">
+                                    <div>
+                                        <button class="btn-small" @click="startEditingCpu({{ $cpu->id }})">Edit</button>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline">
+                                            @csrf
+                                            <input type="hidden" name="action" value="delete_cpu">
+                                            <input type="hidden" name="id" value="{{ $cpu->id }}">
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                        </form>
+                                    </div>
+                                </template>
+                                <template x-if="editingCpu == {{ $cpu->id }}">
+                                    <div>
+                                        <form action="{{ route('hardware.action') }}" method="POST" class="inline" @click.stop>
+                                            @csrf
+                                            <input type="hidden" name="action" value="update_cpu">
+                                            <input type="hidden" name="id" value="{{ $cpu->id }}">
+                                            <input type="hidden" name="name" :value="cpu.name">
+                                            <input type="hidden" name="base_clock_speed_ghz" :value="cpu.base_clock_speed_ghz">
+                                            <input type="hidden" name="cores" :value="cpu.cores">
+                                            <input type="hidden" name="brand_id" :value="cpu.brand_id">
+                                            <button type="submit" class="btn-small success" @click.stop>Save</button>
+                                        </form>
+                                        <button class="btn-small" @click.stop="cancelEditing()">Cancel</button>
+                                    </div>
+                                </template>
+                            </td>
                         </tr>
                     @endforeach
                 </tbody>
