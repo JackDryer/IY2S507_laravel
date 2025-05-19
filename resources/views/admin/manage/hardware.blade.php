@@ -488,7 +488,7 @@
                                             @csrf
                                             <input type="hidden" name="action" value="delete_cpu">
                                             <input type="hidden" name="id" value="{{ $cpu->id }}">
-                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')">Delete</button>
+                                            <button type="submit" class="btn-small danger" onclick="return confirm('Are you sure?')" @click.stop>Delete</button>
                                         </form>
                                     </div>
                                 </template>

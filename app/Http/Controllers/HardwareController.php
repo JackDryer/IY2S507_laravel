@@ -16,24 +16,37 @@ class HardwareController extends Controller
         $queryParams = $request->except(['page', 'assets', 'devices', 'cpus']);
         $queryParams['tab'] = $currentTab;
         
+        // Set default sort to 'name' if no sort parameter is present
+        $sortField = $request->query('sort') ?? 'name';
+        $sortDirection = $request->query('direction') ?? 'asc';
+        
         $assets = Asset::with(["device", "colour"])
             ->sortable()
+            ->when(!$request->has('sort'), function($query) {
+                return $query->orderBy('name', 'asc');
+            })
             ->paginate(10, ['*'], 'assets')
             ->appends($queryParams);
             
         $devices = \App\Models\Device::with(["brand", "cpu", "productType"])
             ->sortable()
+            ->when(!$request->has('sort'), function($query) {
+                return $query->orderBy('name', 'asc');
+            })
             ->paginate(10, ['*'], 'devices')
             ->appends($queryParams);
             
         $cpus = \App\Models\Cpu::with(["brand"])
             ->sortable()
+            ->when(!$request->has('sort'), function($query) {
+                return $query->orderBy('name', 'asc');
+            })
             ->paginate(10, ['*'], 'cpus')
             ->appends($queryParams);
             
-        $colours = \App\Models\Colour::all();
-        $brands = \App\Models\Brand::all();
-        $productTypes = \App\Models\ProductType::all();
+        $colours = \App\Models\Colour::orderBy('name', 'asc')->get();
+        $brands = \App\Models\Brand::orderBy('name', 'asc')->get();
+        $productTypes = \App\Models\ProductType::orderBy('name', 'asc')->get();
         
         return view("admin.manage.hardware", [
             "assets" => $assets,
