@@ -19,11 +19,11 @@
       value="{{ old('email') }}"
       required
     >
-    <label for="employee_no">Employee No:</label>
+    <label for="employee_num">Employee No:</label>
     <input 
       type="text"
-      name="employee_no"
-      value="{{ old('employee_no') }}"
+      name="employee_num"
+      value="{{ old('employee_num') }}"
       required
     >
     <label for="first_name">First name:</label>
@@ -40,6 +40,15 @@
       value="{{ old('last_name') }}"
       required
     >
+    <label for="department_id">Department:</label>
+    <select id="department_id" name="department_id" required>
+      <option value="" disabled selected>Select a department</option>
+      @foreach ($departments as $department)
+        <option value="{{ $department->id }}" {{ $department->id == old('department_id') ? 'selected' : '' }}>
+          {{ $department->name }}
+        </option>
+      @endforeach
+    </select>
     <label for="password">Password:</label>
     <input 
       type="password"

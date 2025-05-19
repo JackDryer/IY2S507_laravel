@@ -58,4 +58,7 @@ class User extends Authenticatable
     public function requests(){
         return $this->hasMany(AssetRequest::class);
     }
+    public function department(){
+        return $this->belongsTo(Department::class);
+    }
 }

@@ -16,6 +16,11 @@ class DepartmentSeeder extends Seeder
         Department::factory()->create([
             'name' => 'IT'
         ]);
-        Department::factory()->count(5)->create();
+        Department::factory()->create([
+            'name' => 'HR'
+        ]);
+        Department::factory()->create([
+            'name' => 'R&D'
+        ]);
     }
 }

@@ -10,4 +10,7 @@ class Department extends Model
 {
     /** @use HasFactory<\Database\Factories\DepartmentFactory> */
     use HasFactory, Sortable;
+    public function users(){
+        return $this->hasMany(User::class);
+    }
 }
