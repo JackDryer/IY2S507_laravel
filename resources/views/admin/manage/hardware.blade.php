@@ -1,29 +1,42 @@
 <x-layout>
     <h2>Hardware Management</h2>
 
-    <div x-data="{ activeTab: '{{ request()->query('tab', 'assets') }}' }">
+    <div x-data="{ 
+        activeTab: '{{ request()->query('tab', 'assets') }}',
+        switchTab(tab) {
+            this.activeTab = tab;
+            // Update URL without page reload
+            const url = new URL(window.location.href);
+            url.searchParams.set('tab', tab);
+            history.pushState({}, '', url);
+        }
+    }">
         <!-- Tab Navigation -->
         <div class="tabs">
-            <button 
-                @click="activeTab = 'assets'" 
+            <a 
+                @click.prevent="switchTab('assets')" 
                 :class="{ 'active': activeTab === 'assets' }" 
                 class="tab-btn"
-            >Assets</button>
-            <button 
-                @click="activeTab = 'devices'" 
+                href="#"
+            >Assets</a>
+            <a 
+                @click.prevent="switchTab('devices')" 
                 :class="{ 'active': activeTab === 'devices' }" 
                 class="tab-btn"
-            >Devices</button>
-            <button 
-                @click="activeTab = 'cpus'" 
+                href="#"
+            >Devices</a>
+            <a 
+                @click.prevent="switchTab('cpus')" 
                 :class="{ 'active': activeTab === 'cpus' }" 
                 class="tab-btn"
-            >CPUs</button>
-            <button 
-                @click="activeTab = 'other'" 
+                href="#"
+            >CPUs</a>
+            <a 
+                @click.prevent="switchTab('other')" 
                 :class="{ 'active': activeTab === 'other' }" 
                 class="tab-btn"
-            >Colours & Brands</button>
+                href="#"
+            >Colours & Brands</a>
         </div>
 
         <!-- Assets Tab -->
@@ -64,8 +77,8 @@
             <table>
                 <thead>
                     <tr>
-                        <th>@sortablelink('name', 'Name')</th>
-                        <th>@sortablelink('serial_number', 'Serial Number')</th>
+                        <th>@sortablelink('name', 'Name', null, ['tab' => 'assets'])</th>
+                        <th>@sortablelink('serial_number', 'Serial Number', null, ['tab' => 'assets'])</th>
                         <th>Colour</th>
                         <th>Device</th>
                         <th>Actions</th>
@@ -91,7 +104,7 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $assets->appends(['devices' => $devices->currentPage(), 'cpus' => $cpus->currentPage()])->links() }}
+            {{ $assets->appends(['devices' => $devices->currentPage(), 'cpus' => $cpus->currentPage(), 'tab' => 'assets'])->links() }}
         </div>
 
         <!-- Devices Tab -->
@@ -143,9 +156,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th>@sortablelink('name', 'Name')</th>
-                        <th>@sortablelink('ram_bytes', 'RAM')</th>
-                        <th>@sortablelink('storage_bytes', 'Storage')</th>
+                        <th>@sortablelink('name', 'Name', null, ['tab' => 'devices'])</th>
+                        <th>@sortablelink('ram_bytes', 'RAM', null, ['tab' => 'devices'])</th>
+                        <th>@sortablelink('storage_bytes', 'Storage', null, ['tab' => 'devices'])</th>
                         <th>Brand</th>
                         <th>CPU</th>
                         <th>Type</th>
@@ -164,7 +177,7 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $devices->appends(['assets' => $assets->currentPage(), 'cpus' => $cpus->currentPage()])->links() }}
+            {{ $devices->appends(['assets' => $assets->currentPage(), 'cpus' => $cpus->currentPage(), 'tab' => 'devices'])->links() }}
         </div>
 
         <!-- CPUs Tab -->
@@ -200,9 +213,9 @@
             <table>
                 <thead>
                     <tr>
-                        <th>@sortablelink('name', 'Name')</th>
-                        <th>@sortablelink('base_clock_speed_hz', 'Clock Speed')</th>
-                        <th>@sortablelink('cores', 'Cores')</th>
+                        <th>@sortablelink('name', 'Name', null, ['tab' => 'cpus'])</th>
+                        <th>@sortablelink('base_clock_speed_hz', 'Clock Speed', null, ['tab' => 'cpus'])</th>
+                        <th>@sortablelink('cores', 'Cores', null, ['tab' => 'cpus'])</th>
                         <th>Brand</th>
                     </tr>
                 </thead>
@@ -217,7 +230,7 @@
                     @endforeach
                 </tbody>
             </table>
-            {{ $cpus->appends(['assets' => $assets->currentPage(), 'devices' => $devices->currentPage()])->links() }}
+            {{ $cpus->appends(['assets' => $assets->currentPage(), 'devices' => $devices->currentPage(), 'tab' => 'cpus'])->links() }}
         </div>
 
         <!-- Other Tab for Colours & Brands -->
@@ -276,4 +289,50 @@
         </div>
     @endif
 
+    <!-- Add JavaScript for pagination links -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle pagination links to preserve tab
+            document.body.addEventListener('click', function(e) {
+                // Find closest pagination link
+                const paginationLink = e.target.closest('.pagination a');
+                
+                if (paginationLink) {
+                    e.preventDefault();
+                    
+                    // Get current tab from URL or Alpine.js state
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const currentTab = urlParams.get('tab') || 'assets';
+                    
+                    // Get link URL and add tab parameter
+                    let url = new URL(paginationLink.href);
+                    url.searchParams.set('tab', currentTab);
+                    
+                    // Navigate to new URL
+                    window.location.href = url.toString();
+                }
+            });
+            
+            // Handle sortable links to preserve tab
+            document.body.addEventListener('click', function(e) {
+                // Find closest sortable link
+                const sortLink = e.target.closest('a[data-sortable]');
+                
+                if (sortLink) {
+                    e.preventDefault();
+                    
+                    // Get current tab from URL or Alpine.js state
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const currentTab = urlParams.get('tab') || 'assets';
+                    
+                    // Get link URL and add tab parameter
+                    let url = new URL(sortLink.href);
+                    url.searchParams.set('tab', currentTab);
+                    
+                    // Navigate to new URL
+                    window.location.href = url.toString();
+                }
+            });
+        });
+    </script>
 </x-layout>

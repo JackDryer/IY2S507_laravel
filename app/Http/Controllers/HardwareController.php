@@ -7,11 +7,30 @@ use Illuminate\Http\Request;
 
 class HardwareController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $assets = Asset::with(["device", "colour"])->sortable()->paginate(10, ['*'], 'assets');
-        $devices = \App\Models\Device::with(["brand", "cpu", "productType"])->sortable()->paginate(10, ['*'], 'devices');
-        $cpus = \App\Models\Cpu::with(["brand"])->sortable()->paginate(10, ['*'], 'cpus');
+        // Get current tab from the request
+        $currentTab = $request->query('tab', 'assets');
+        
+        // Ensure sort parameters also include the tab
+        $queryParams = $request->except(['page', 'assets', 'devices', 'cpus']);
+        $queryParams['tab'] = $currentTab;
+        
+        $assets = Asset::with(["device", "colour"])
+            ->sortable()
+            ->paginate(10, ['*'], 'assets')
+            ->appends($queryParams);
+            
+        $devices = \App\Models\Device::with(["brand", "cpu", "productType"])
+            ->sortable()
+            ->paginate(10, ['*'], 'devices')
+            ->appends($queryParams);
+            
+        $cpus = \App\Models\Cpu::with(["brand"])
+            ->sortable()
+            ->paginate(10, ['*'], 'cpus')
+            ->appends($queryParams);
+            
         $colours = \App\Models\Colour::all();
         $brands = \App\Models\Brand::all();
         $productTypes = \App\Models\ProductType::all();
@@ -22,7 +41,8 @@ class HardwareController extends Controller
             "cpus" => $cpus,
             "colours" => $colours,
             "brands" => $brands,
-            "productTypes" => $productTypes
+            "productTypes" => $productTypes,
+            "currentTab" => $currentTab
         ]);
     }
 
