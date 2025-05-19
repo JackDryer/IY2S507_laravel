@@ -617,11 +617,6 @@
         </div>
     </div>
     
-    @if (session('success'))
-        <div class="success-alert">
-            {{ session('success') }}
-        </div>
-    @endif
 
     <!-- Add JavaScript for pagination links -->
     <script>
