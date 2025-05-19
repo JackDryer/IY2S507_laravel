@@ -27,20 +27,20 @@ Route::middleware(['auth'])->controller(AssetController::class)->group(function(
     Route::get('/assets/create', "create");
     Route::get('/assets/{id}', "show");
 });
-Route::middleware(['auth'])->controller(UserController::class)->group(function(){
-    Route::get('/home', "home")->name("user.home"); 
-    Route::get('/available_assets', "showAvailableAssets")->name("user.available_assets"); 
-    Route::post('/available_assets', "requestAsset")->name("user.request_asset");
+Route::middleware(['auth'])->controller(UserController::class)->name('user.')->group(function(){
+    Route::get('/home', "home")->name("home"); 
+    Route::get('/available_assets', "showAvailableAssets")->name("available_assets"); 
+    Route::post('/available_assets', "requestAsset")->name("request_asset");
 });
 
 // Admin routes focused on user and request management
-Route::middleware(['auth','admin'])->controller(AdminController::class)->group(function(){
-    Route::get('/admin', "home")->name("admin.home");
-    Route::get('/admin/user_requests', "showUserRequests")->name("admin.user_requests");
-    Route::post('/admin/user_requests', "approveUserRequest")->name("admin.approve_user_request");
-    Route::get('/admin/asset_requests', "showAssetRequests")->name("admin.asset_requests");
-    Route::post('/admin/asset_requests', "approveAssetRequest")->name("admin.approve_asset_request");
-    Route::get('/admin/manage_users', "showManageUsers")->name("admin.manage_users");
+Route::middleware(['auth','admin'])->controller(AdminController::class)->prefix('admin/')->name('admin.')->group(function(){
+    Route::get('/', "home")->name("home");
+    Route::get('/user_requests', "showUserRequests")->name("user_requests");
+    Route::post('/user_requests', "approveUserRequest")->name("approve_user_request");
+    Route::get('/asset_requests', "showAssetRequests")->name("asset_requests");
+    Route::post('/asset_requests', "approveAssetRequest")->name("approve_asset_request");
+    Route::get('/manage_users', "showManageUsers")->name("manage_users");
 });
 
 // New hardware management routes with single POST endpoint
