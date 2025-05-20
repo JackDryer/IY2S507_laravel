@@ -82,25 +82,25 @@
     <!-- Active Filters Summary -->
     <div x-show="showFilters" class="mt-3 flex flex-wrap gap-2">
         @if(isset($filters['device_type']) && $filters['device_type'])
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-amber-100 text-amber-800">
                 Type: {{ $productTypes->where('id', $filters['device_type'])->first()->name }}
             </span>
         @endif
         
         @if(isset($filters['brand']) && $filters['brand'])
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-amber-100 text-amber-800">
                 Brand: {{ $brands->where('id', $filters['brand'])->first()->name }}
             </span>
         @endif
         
         @if(isset($filters['min_ram']) && $filters['min_ram'])
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-amber-100 text-amber-800">
                 RAM: {{ $filters['min_ram'] }}GB+
             </span>
         @endif
         
         @if(isset($filters['min_storage']) && $filters['min_storage'])
-            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-blue-100 text-blue-800">
+            <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-amber-100 text-amber-800">
                 Storage: {{ $filters['min_storage'] }}GB+
             </span>
         @endif
