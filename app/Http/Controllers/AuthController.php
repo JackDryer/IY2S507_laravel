@@ -106,7 +106,7 @@ class AuthController extends Controller
             unset($validated['password']);
         }
         
-        // Use fill and save instead of update
+
         $user->fill($validated);
         $user->save();
         

@@ -158,7 +158,6 @@ class AdminController extends Controller
                     // Cancel any pending asset requests from this user
                     DB::table('asset_requests')
                         ->where('user_id', $userId)
-                        ->where('status', 'requested')
                         ->update(['status' => 'denied']);
                     
                     DB::commit();
