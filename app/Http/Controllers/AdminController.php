@@ -34,6 +34,16 @@ class AdminController extends Controller
         $user->save();
         return redirect(route("admin.user_requests"))->with("success", "User Approved");
     }
+        public function denyUserRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required|integer'
+        ]);
+        $user = User::find($validated["id"]);
+        $user->status = "denied";
+        $user->save();
+        return redirect(route("admin.user_requests"))->with("success", "User Denied");
+    }
     public function showAssetRequests()
     {
         $asset_requests = AssetRequest::with(["user", "asset"])->where("status", "requested")->sortable()->paginate(10);
@@ -48,6 +58,16 @@ class AdminController extends Controller
         $asset_request->status = "approved";
         $asset_request->save();
         return redirect(route("admin.asset_requests"))->with("success", "Asset Approved");
+    }
+    public function denyAssetRequest(Request $request)
+    {
+        $validated = $request->validate([
+            'id' => 'required|integer'
+        ]);
+        $asset_request = AssetRequest::find($validated["id"]);
+        $asset_request->status = "denied";
+        $asset_request->save();
+        return redirect(route("admin.asset_requests"))->with("success", "Asset Denied");
     }
     public function showManageUsers()
     {

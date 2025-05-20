@@ -1,5 +1,5 @@
 <x-layout>
-    <h2>Pending User Requests</h2>
+    <h2>Pending Asset Requests</h2>
     <table>
         <thead>
             <tr>
@@ -16,7 +16,12 @@
                         <td><form action="{{route("admin.approve_asset_request")}}" method="POST">
                             @csrf
                             <input type="hidden" name="id" value="{{$request->id}}">
-                            <button class="btn block mx-auto">Approve</button>
+                            <button class="btn block mx-auto" @click.stop="open">Approve</button>
+                        </form></td>
+                            <td><form action="{{route("admin.deny_asset_request")}}" method="POST">
+                            @csrf
+                            <input type="hidden" name="id" value="{{$request->id}}">
+                            <button class="btn block mx-auto" @click.stop="open">Deny</button>
                         </form></td>
                     </div>
                 </tr>

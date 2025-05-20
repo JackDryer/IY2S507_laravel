@@ -24,10 +24,6 @@ Route::middleware(['guest'])->controller(AuthController::class)->group(function(
 });
 Route::post('/logout',[AuthController::class,'logout'])->name("logout")->middleware('auth');
 
-Route::middleware(['auth'])->controller(AssetController::class)->group(function(){
-    Route::get('/assets/create', "create");
-    Route::get('/assets/{id}', "show");
-});
 Route::middleware(['auth'])->controller(UserController::class)->name('user.')->group(function(){
     Route::get('/home', "home")->name("home"); 
     Route::get('/available_assets', "showAvailableAssets")->name("available_assets"); 
@@ -38,9 +34,11 @@ Route::middleware(['auth'])->controller(UserController::class)->name('user.')->g
 Route::middleware(['auth','admin'])->controller(AdminController::class)->prefix('admin/')->name('admin.')->group(function(){
     Route::get('/', "home")->name("home");
     Route::get('/user_requests', "showUserRequests")->name("user_requests");
-    Route::post('/user_requests', "approveUserRequest")->name("approve_user_request");
+    Route::post('/user_requests/approve', "approveUserRequest")->name("approve_user_request");
+    Route::post('/user_requests/deny', "denyUserRequest")->name("deny_user_request");
     Route::get('/asset_requests', "showAssetRequests")->name("asset_requests");
-    Route::post('/asset_requests', "approveAssetRequest")->name("approve_asset_request");
+    Route::post('/asset_requests/approve', "approveAssetRequest")->name("approve_asset_request");
+    Route::post('/asset_requests/deny', "denyAssetRequest")->name("deny_asset_request");
     Route::get('/manage_users', "showManageUsers")->name("manage_users");
     Route::post('/manage_user', "manageUser")->name("manage_user");
 });

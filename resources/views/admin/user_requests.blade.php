@@ -14,7 +14,14 @@
                     <form action="{{route("admin.approve_user_request")}}" method="POST">
                         @csrf
                         <input type="hidden" name="id" value="{{$request->id}}">
-                        <button class="btn btn block mx-auto">Approve</button>
+                        <button class="btn btn block mx-auto" @click.stop="open">Approve</button>
+                    </form>
+                </td>
+                <td>
+                    <form action="{{route("admin.deny_user_request")}}" method="POST">
+                        @csrf
+                        <input type="hidden" name="id" value="{{$request->id}}">
+                        <button class="btn btn block mx-auto" @click.stop="open">Deny</button>
                     </form>
                 </td>
             </x-expandable-user>
