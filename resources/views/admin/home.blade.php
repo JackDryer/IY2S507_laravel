@@ -20,6 +20,8 @@
                 <a href = "{{ route('hardware.index') }}">
                     <p>Hardware</p>
                 </a>
+                <a href = "{{route("feeds.create")}}" > 
+                    <p>Add RSS Feed</p></a>
             </u>
         </div>
     </div>

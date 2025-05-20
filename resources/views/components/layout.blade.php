@@ -19,6 +19,7 @@
                 {{Auth::user()->name}}
             </span>
             <a href = "{{route("user.home")}}" > My Assets</a>
+            <a href = "{{route("feeds.index")}}" > RSS Feed</a>
             @admin
               <a href = "{{route('admin.home')}}">Admin</a>  
             @endadmin
