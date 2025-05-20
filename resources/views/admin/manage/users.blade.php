@@ -125,6 +125,7 @@
                                                 method: 'POST',
                                                 headers: {
                                                     'Content-Type': 'application/json',
+                                                    'Accept': 'application/json',
                                                     'X-CSRF-TOKEN': document.querySelector('meta[name=csrf-token]').content
                                                 },
                                                 body: JSON.stringify({
@@ -140,14 +141,22 @@
                                                     action: 'update'
                                                 })
                                             })
-                                            .then(response => response.json())
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    return response.json().then(err => {
+                                                        throw new Error(err.message || 'Update failed');
+                                                    });
+                                                }
+                                                return response.json();
+                                            })
                                             .then(data => {
                                                 if(data.success) {
                                                     editMode = false;
                                                     window.location.reload();
-                                                } else {
-                                                    alert('Update failed: ' + data.message);
                                                 }
+                                            })
+                                            .catch(error => {
+                                                alert('Error: ' + error.message);
                                             })" 
                                             class="bg-green-500 hover:bg-green-700 text-white text-xs py-0.5 px-1.5 rounded flex-1">
                                             Save

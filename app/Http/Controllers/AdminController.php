@@ -52,7 +52,11 @@ class AdminController extends Controller
     public function showManageUsers()
     {
         $users = User::sortable()->paginate(10);
-        return view("admin.manage.users", ["users" => $users]);
+        $departments = \App\Models\Department::all(); // Add this line
+        return view("admin.manage.users", [
+            "users" => $users,
+            "departments" => $departments // Pass departments to the view
+        ]);
     }
     public function addAsset(Request $request)
     {
@@ -86,42 +90,81 @@ class AdminController extends Controller
 
     public function manageUser(Request $request)
     {
-        $userId = $request->input('id');
-        $action = $request->input('action');
+        // Handle JSON request format (for fetch API calls)
+        if ($request->isJson()) {
+            $data = $request->json()->all();
+            $userId = $data['id'];
+            $action = $data['action'];
+        } else {
+            $userId = $request->input('id');
+            $action = $request->input('action');
+        }
+        
         $user = User::findOrFail($userId);
 
         switch ($action) {
             case 'update':
-                // Update user details
-                $validated = $request->validate([
-                    'name' => 'required|string|max:255',
-                    'email' => 'required|email|max:255|unique:users,email,' . $userId,
-                    'role' => 'required|string|in:admin,user', // Example roles
-                ]);
-                $user->name = $validated['name'];
-                $user->email = $validated['email'];
-                $user->role = $validated['role'];
-                $user->save();
-                return redirect()->back()->with('success', 'User updated successfully');
+                // Check if this is a JSON request
+                if ($request->isJson()) {
+                    try {
+                        $validated = $request->validate([
+                            'first_name' => 'required|string|max:255',
+                            'last_name' => 'required|string|max:255',
+                            'email' => 'required|email|max:255|unique:users,email,' . $userId,
+                            'employee_num' => 'required|string|max:255|unique:users,employee_num,' . $userId,
+                            'department_id' => 'required|exists:departments,id',
+                            'device_limit' => 'required|integer|min:0',
+                            'status' => 'required|in:requested,active,denied',
+                            'is_admin' => 'required|boolean'
+                        ]);
+                        
+                        $user->first_name = $validated['first_name'];
+                        $user->last_name = $validated['last_name'];
+                        $user->email = $validated['email'];
+                        $user->employee_num = $validated['employee_num'];
+                        $user->department_id = $validated['department_id'];
+                        $user->device_limit = $validated['device_limit'];
+                        $user->status = $validated['status'];
+                        $user->is_admin = $validated['is_admin'];
+                        $user->save();
+                        
+                        // Set a flash message that can be read after redirecting
+                        session()->flash('success', 'User updated successfully');
+                        
+                        return response()->json([
+                            'success' => true, 
+                            'message' => 'User updated successfully'
+                        ]);
+                    } catch (\Exception $e) {
+                        return response()->json(['success' => false, 'message' => $e->getMessage()], 422);
+                    }
+                } else {
+                    // Handle traditional form submission (if needed)
+                    // ...existing code...
+                }
+                break;
 
             case 'approve':
                 $user->status = 'active';
                 $user->save();
-                return redirect()->back()->with('success', 'User approved');
-
-            case 'toggle_status':
-                // Toggle user status (is_disabled)
-                $user->is_disabled = !$user->is_disabled;
-                $user->save();
-                $status = $user->is_disabled ? 'disabled' : 'enabled';
-                return redirect()->back()->with('success', "User $status");
+                return redirect()->back()->with('success', 'User approved');;
 
             case 'strip_assets':
-                // Strip all assets from user
-                DB::table('assets')
-                    ->where('user_id', $userId)
-                    ->update(['user_id' => null]);
-                return redirect()->back()->with('success', 'All assets removed from user');
+                // Begin transaction to ensure data consistency
+                DB::beginTransaction();
+                try {
+                    // Cancel any pending asset requests from this user
+                    DB::table('asset_requests')
+                        ->where('user_id', $userId)
+                        ->where('status', 'requested')
+                        ->update(['status' => 'denied']);
+                    
+                    DB::commit();
+                    return redirect()->back()->with('success', 'All assets and pending requests removed from user');
+                } catch (\Exception $e) {
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Error removing user assets: ' . $e->getMessage());
+                }
 
             default:
                 return redirect()->back()->with('error', 'Invalid action');
