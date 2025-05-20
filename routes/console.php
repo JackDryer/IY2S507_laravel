@@ -10,4 +10,5 @@ Artisan::command('inspire', function () {
 
 Schedule::call(function () {
     RssController::updateFeeds();
-    })->everyFifteenSeconds();
+    })->everyFifteenSeconds()->name('updateFeeds');
+    

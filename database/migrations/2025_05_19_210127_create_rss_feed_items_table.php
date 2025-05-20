@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->string('title');
             $table->string('link')->unique();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->dateTime('pub_date');
             $table->foreignId('feed_source_id')->constrained('rss_feeds')->onDelete('cascade');
             $table->softDeletes();

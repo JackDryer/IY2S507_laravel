@@ -5,17 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\RssFeed;
 use App\Models\RssFeedItem;
+use Illuminate\Support\Facades\Log;
 use Vedmant\FeedReader\Facades\FeedReader;
 
 class RssController extends Controller
 {
     public static function updateFeeds()
     {
+    Log::info('reading feed');
     $feeds = RssFeed::all();
 
     foreach ($feeds as $source) {
         $feed = FeedReader::read($source->url);
-
+        Log::info('reading feed', ['feed' => $source->url]);
         foreach ($feed->get_items() as $item) {
             RssFeedItem::updateOrCreate(
                 ['link' => $item->get_permalink()],
@@ -38,9 +40,10 @@ class RssController extends Controller
 public function index()
 {
     // Assuming you have a Feed model - adjust as needed for your actual data structure
-    $feeds = RssFeed::with('rssFeedItems')->get();
+    $feed = RssFeedItem::orderBy("pub_date", "desc")
+        ->paginate(20);
     
-    return view('rss.index', compact('feeds'));
+    return view('rss.index', compact('feed'));
 }
 
 /**
