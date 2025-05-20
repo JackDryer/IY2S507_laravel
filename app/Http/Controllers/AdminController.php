@@ -111,6 +111,7 @@ class AdminController extends Controller
                             'first_name' => 'required|string|max:255',
                             'last_name' => 'required|string|max:255',
                             'email' => 'required|email|max:255|unique:users,email,' . $userId,
+                            'username' => 'required|string|max:255|unique:users,name,' . $userId, // Add username validation
                             'employee_num' => 'required|string|max:255|unique:users,employee_num,' . $userId,
                             'department_id' => 'required|exists:departments,id',
                             'device_limit' => 'required|integer|min:0',
@@ -121,6 +122,7 @@ class AdminController extends Controller
                         $user->first_name = $validated['first_name'];
                         $user->last_name = $validated['last_name'];
                         $user->email = $validated['email'];
+                        $user->name = $validated['username']; // Update the username (stored in name field)
                         $user->employee_num = $validated['employee_num'];
                         $user->department_id = $validated['department_id'];
                         $user->device_limit = $validated['device_limit'];
