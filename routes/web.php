@@ -42,6 +42,7 @@ Route::middleware(['auth','admin'])->controller(AdminController::class)->prefix(
     Route::get('/asset_requests', "showAssetRequests")->name("asset_requests");
     Route::post('/asset_requests', "approveAssetRequest")->name("approve_asset_request");
     Route::get('/manage_users', "showManageUsers")->name("manage_users");
+    Route::post('/manage_user', "manageUser")->name("manage_user");
 });
 
 // New hardware management routes with single POST endpoint
