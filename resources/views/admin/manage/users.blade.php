@@ -1,23 +1,6 @@
 <x-layout>
     <div class="container-fluid mx-auto px-1">
         <h1 class="text-xl font-bold mb-3">Manage Users</h1>
-
-        <!-- Search/Filter Controls -->
-        <div class="mb-3 flex flex-wrap gap-1">
-            <form method="GET" action="{{ route('admin.manage_users') }}" class="flex flex-wrap gap-1">
-                <input type="text" name="search" placeholder="Search users..." 
-                       class="px-2 py-1 border rounded text-xs" value="{{ request('search') }}">
-                <select name="status" class="px-2 py-1 border rounded text-xs">
-                    <option value="">All Status</option>
-                    <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
-                    <option value="requested" {{ request('status') == 'requested' ? 'selected' : '' }}>Requested</option>
-                    <option value="denied" {{ request('status') == 'denied' ? 'selected' : '' }}>Denied</option>
-                </select>
-                <button type="submit" class="bg-blue-500 text-white px-2 py-1 rounded text-xs">Filter</button>
-                <a href="{{ route('admin.manage_users') }}" class="bg-gray-500 text-white px-2 py-1 rounded text-xs">Reset</a>
-            </form>
-        </div>
-
         <div class="overflow-x-auto bg-white rounded-lg shadow">
             <table class="w-full divide-y divide-gray-200">
                 <thead class="bg-gray-100">
@@ -26,10 +9,11 @@
                         <th class="px-2 py-1 text-xs font-medium text-left">Emp #</th>
                         <th class="px-2 py-1 text-xs font-medium text-left">Name</th>
                         <th class="px-2 py-1 text-xs font-medium text-left">Email</th>
+                        <th class="px-2 py-1 text-xs font-medium text-left">Username</th>
                         <th class="px-2 py-1 text-xs font-medium text-left">Dept</th>
                         <th class="px-2 py-1 text-xs font-medium text-left">Limit</th>
-                        <th class="px-2 py-1 text-xs font-medium text-left">Status</th>
                         <th class="px-2 py-1 text-xs font-medium text-left">Admin</th>
+                        <th class="px-2 py-1 text-xs font-medium text-left">Status</th>
                         <th class="px-2 py-1 text-xs font-medium text-left">Actions</th>
                     </tr>
                 </thead>
@@ -40,11 +24,12 @@
                             userFirstName: '{{ $user->first_name }}',
                             userLastName: '{{ $user->last_name }}',
                             userEmail: '{{ $user->email }}',
+                            userUsername: '{{ $user->name }}',
                             userEmployeeNum: '{{ $user->employee_num }}',
                             userDepartment: '{{ $user->department_id }}',
                             userDeviceLimit: '{{ $user->device_limit }}',
-                            userStatus: '{{ $user->status }}',
-                            userIsAdmin: {{ $user->is_admin ? 'true' : 'false' }}
+                            userIsAdmin: {{ $user->is_admin ? 'true' : 'false' }},
+                            userStatus: '{{ $user->status }}'
                         }">
                             <td class="px-2 py-1 text-xs whitespace-nowrap">{{ $user->id }}</td>
                             
@@ -67,6 +52,11 @@
                             </td>
                             
                             <td class="px-2 py-1 text-xs whitespace-nowrap">
+                                <span x-show="!editMode" x-on:click="editMode = true" class="cursor-pointer hover:text-blue-600">{{ $user->name }}</span>
+                                <input x-show="editMode" type="text" x-model="userUsername" class="w-full text-xs border rounded py-0.5 px-1">
+                            </td>
+                            
+                            <td class="px-2 py-1 text-xs whitespace-nowrap">
                                 <span x-show="!editMode" x-on:click="editMode = true" class="cursor-pointer hover:text-blue-600">{{ $user->department->name ?? 'Unknown' }}</span>
                                 <select x-show="editMode" x-model="userDepartment" class="w-full text-xs border rounded py-0.5 px-1">
                                     @foreach($departments ?? [] as $department)
@@ -82,20 +72,6 @@
                             
                             <td class="px-2 py-1 text-xs whitespace-nowrap">
                                 <span x-show="!editMode" x-on:click="editMode = true" class="cursor-pointer hover:text-blue-600">
-                                    <span class="px-1.5 py-0.5 text-xs rounded-full {{ $user->status == 'active' ? 'bg-green-100 text-green-800' : 
-                                        ($user->status == 'requested' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
-                                        {{ ucfirst($user->status) }}
-                                    </span>
-                                </span>
-                                <select x-show="editMode" x-model="userStatus" class="w-full text-xs border rounded py-0.5 px-1">
-                                    <option value="requested">Requested</option>
-                                    <option value="active">Active</option>
-                                    <option value="denied">Denied</option>
-                                </select>
-                            </td>
-                            
-                            <td class="px-2 py-1 text-xs whitespace-nowrap">
-                                <span x-show="!editMode" x-on:click="editMode = true" class="cursor-pointer hover:text-blue-600">
                                     {{ $user->is_admin ? 'Yes' : 'No' }}
                                 </span>
                                 <select x-show="editMode" x-model="userIsAdmin" class="w-full text-xs border rounded py-0.5 px-1">
@@ -105,17 +81,21 @@
                             </td>
                             
                             <td class="px-2 py-1 text-xs whitespace-nowrap">
+                                <span x-show="!editMode" x-on:click="editMode = true" class="cursor-pointer hover:text-blue-600">
+                                    {{ ucfirst($user->status) }}
+                                </span>
+                                <select x-show="editMode" x-model="userStatus" class="w-full text-xs border rounded py-0.5 px-1">
+                                    <option value="active">Active</option>
+                                    <option value="denied">Denied</option>
+                                    <option value="requested">Requested</option>
+                                </select>
+                            </td>
+                            
+                            <td class="px-2 py-1 text-xs whitespace-nowrap">
                                 <div x-show="!editMode" class="flex gap-1">
                                     <button @click="editMode = true" class="bg-blue-500 hover:bg-blue-700 text-white text-xs py-0.5 px-1.5 rounded">
                                         Edit
                                     </button>
-                                    <form action="{{ route('admin.manage_user') }}" method="POST" class="inline">
-                                        @csrf
-                                        <input type="hidden" name="id" value="{{ $user->id }}">
-                                        <button type="submit" name="action" value="toggle_status" class="bg-yellow-500 hover:bg-yellow-700 text-white text-xs py-0.5 px-1.5 rounded">
-                                            {{ $user->status == 'active' ? 'Deact' : 'Act' }}
-                                        </button>
-                                    </form>
                                 </div>
                                 
                                 <div x-show="editMode" class="flex flex-col gap-1">
@@ -133,11 +113,12 @@
                                                     first_name: userFirstName,
                                                     last_name: userLastName,
                                                     email: userEmail,
+                                                    username: userUsername,
                                                     employee_num: userEmployeeNum,
                                                     department_id: userDepartment,
                                                     device_limit: userDeviceLimit,
-                                                    status: userStatus,
                                                     is_admin: userIsAdmin === 'true',
+                                                    status: userStatus,
                                                     action: 'update'
                                                 })
                                             })
@@ -166,11 +147,12 @@
                                             userFirstName = '{{ $user->first_name }}';
                                             userLastName = '{{ $user->last_name }}';
                                             userEmail = '{{ $user->email }}';
+                                            userUsername = '{{ $user->name }}';
                                             userEmployeeNum = '{{ $user->employee_num }}';
                                             userDepartment = '{{ $user->department_id }}';
                                             userDeviceLimit = '{{ $user->device_limit }}';
-                                            userStatus = '{{ $user->status }}';
                                             userIsAdmin = {{ $user->is_admin ? 'true' : 'false' }};
+                                            userStatus = '{{ $user->status }}';
                                         " class="bg-gray-500 hover:bg-gray-700 text-white text-xs py-0.5 px-1.5 rounded flex-1">
                                             Cancel
                                         </button>
