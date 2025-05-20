@@ -64,6 +64,55 @@ class AuthController extends Controller
             'credentials'=>'Sorry, incorrect credentials or the user has not been approved'
         ]);
     }
+    
+    public function showProfile()
+    {
+        $departments = Department::All();
+        $user = Auth::user();
+        return view('auth.profile', [
+            'user' => $user,
+            'departments' => $departments
+        ]);
+    }
+    
+    public function updateProfile(Request $request)
+    {
+        $user = Auth::user();
+        
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'employee_num' => 'required|digits_between:4,10',
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'department_id' => 'required|exists:departments,id',
+            'password' => [
+                'nullable',
+                'string',
+                'confirmed',
+                Password::min(8)
+                    ->letters()
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+                    ->uncompromised(),
+            ],
+        ]);
+        
+        // Only update password if provided
+        if (!empty($validated['password'])) {
+            $validated['password'] = bcrypt($validated['password']);
+        } else {
+            unset($validated['password']);
+        }
+        
+        // Use fill and save instead of update
+        $user->fill($validated);
+        $user->save();
+        
+        return redirect()->route('profile')->with('success', 'Profile updated successfully');
+    }
+    
     public function logout (Request $request){
         Auth::logout();
         $request->session()->invalidate();

@@ -54,3 +54,8 @@ Route::middleware(['auth','admin'])->controller(HardwareController::class)->pref
 Route::get('/feeds', [RssController::class, 'index'])->middleware('auth')->name('feeds.index');
 Route::get('/admin/add_rss', [RssController::class, 'create'])->middleware(['auth','admin'])->name('feeds.create');
 Route::post('/admin/add_rss', [RssController::class, 'store'])->middleware(['auth','admin'])->name('feeds.store');
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [AuthController::class, 'showProfile'])->name('profile');
+    Route::put('/profile', [AuthController::class, 'updateProfile'])->name('profile.update');
+});
