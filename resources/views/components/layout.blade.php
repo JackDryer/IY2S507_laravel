@@ -21,6 +21,7 @@
             </span>
             <a href = "{{route("user.home")}}" > My Assets</a>
             <a href = "{{route("feeds.index")}}" > RSS Feed</a>
+            <a href = "{{route("profile")}}" > Profile</a>
             @admin
               <a href = "{{route('admin.home')}}">Admin</a>  
             @endadmin
