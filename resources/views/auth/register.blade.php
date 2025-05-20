@@ -75,4 +75,53 @@
     @endif
     
   </form>
+
+  <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordInput = document.querySelector('input[name="password"]');
+    const confirmInput = document.querySelector('input[name="password_confirmation"]');
+    const feedbackElement = document.createElement('div');
+    feedbackElement.classList.add('password-feedback');
+    passwordInput.parentNode.insertBefore(feedbackElement, passwordInput.nextSibling);
+    
+    passwordInput.addEventListener('input', validatePassword);
+    confirmInput?.addEventListener('input', validateConfirmPassword);
+    
+    function validatePassword() {
+        const password = passwordInput.value;
+        const requirements = [
+            { regex: /.{8,}/, text: "At least 8 characters" },
+            { regex: /[A-Z]/, text: "At least one uppercase letter" },
+            { regex: /[a-z]/, text: "At least one lowercase letter" },
+            { regex: /[0-9]/, text: "At least one number" },
+            { regex: /[^A-Za-z0-9]/, text: "At least one special character" }
+        ];
+        
+        let html = '<div class="mt-2 text-sm">Password requirements:</div><ul class="mt-1 text-sm">';
+        let valid = true;
+        
+        requirements.forEach(req => {
+            const isValid = req.regex.test(password);
+            valid = valid && isValid;
+            const statusClass = isValid ? 'text-green-500' : 'text-red-500';
+            const statusIcon = isValid ? '✓' : '✗';
+            html += `<li class="${statusClass}">${statusIcon} ${req.text}</li>`;
+        });
+        
+        html += '</ul>';
+        feedbackElement.innerHTML = html;
+        
+        // Update form validity
+        passwordInput.setCustomValidity(valid ? '' : 'Password does not meet requirements');
+    }
+    
+    function validateConfirmPassword() {
+        if (confirmInput.value !== passwordInput.value) {
+            confirmInput.setCustomValidity('Passwords do not match');
+        } else {
+            confirmInput.setCustomValidity('');
+        }
+    }
+});
+</script>
 </x-layout>
